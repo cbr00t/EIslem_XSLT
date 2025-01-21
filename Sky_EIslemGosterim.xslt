@@ -1430,7 +1430,7 @@
                 ($satirdaIskBedelmi = 'true' and $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ISKTOPBEDELGORUNUM'])">
               <td class="numeric iskonto">İskonto</td>
             </xsl:if>
-            <xsl:if test="$satirdaKdvmi = 'true' and (not ($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not ($eIhracatmi or $eMustahsilmi)">
+            <xsl:if test="$satirdaKdvmi = 'true' and not ($eIrsaliyemi or $eIhracatmi or $eMustahsilmi)">
               <td class="numeric kdvText">KDV</td>
             </xsl:if>
             <xsl:if test="$satirdaDigerVergilermi = 'true' and $xroot//cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme[cbc:TaxTypeCode != '0015']">
@@ -1685,7 +1685,7 @@
               <xsl:text> </xsl:text>
             </td>
           </xsl:if>
-          <xsl:if test="$satirdaKdvmi = 'true' and (not ($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not ($eIhracatmi or $eMustahsilmi)">
+          <xsl:if test="$satirdaKdvmi = 'true' and not ($eIrsaliyemi or $eIhracatmi or $eMustahsilmi)">
             <td class="numeric kdvText">
               <xsl:for-each select="cac:TaxTotal/cac:TaxSubtotal [cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode = '0015']">
                 <div class="asil item">
