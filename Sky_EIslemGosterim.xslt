@@ -2486,13 +2486,13 @@
       <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentTypeCode = 'ONCEKI_BAKIYE']/cbc:DocumentDescription">
         <xsl:call-template name="bakiye">
           <xsl:with-param name="cssPrefix" select="'oncekiBakiye'"/>
-          <xsl:with-param name="etiketPrefix" select="'Önceki'"/>
+          <xsl:with-param name="etiketPrefix" select="'Öncesi'"/>
         </xsl:call-template>
       </xsl:for-each>
       <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentTypeCode = 'SONRAKI_BAKIYE']/cbc:DocumentDescription">
         <xsl:call-template name="bakiye">
           <xsl:with-param name="cssPrefix" select="'sonrakiBakiye'"/>
-          <xsl:with-param name="etiketPrefix" select="'Sonraki'"/>
+          <xsl:with-param name="etiketPrefix" select="'Sonrası'"/>
         </xsl:call-template>
       </xsl:for-each>
     </div>
@@ -2504,7 +2504,7 @@
     <xsl:param name="cssPrefix"/>
     <xsl:param name="etiketPrefix"/>
     <div class="$cssPrefix bakiye">
-      <span class="etiket"><xsl:value-of select="$etiketPrefix"/> Bakiye: </span>
+      <span class="etiket">Bu Fatura <xsl:value-of select="$etiketPrefix"/> Bakiye: </span>
       <span class="veri"><xsl:value-of select="." disable-output-escaping="yes"/></span>
     </div>
   </xsl:template>
