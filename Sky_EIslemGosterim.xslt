@@ -1730,27 +1730,36 @@
           </xsl:if>
           <xsl:if test="$satirdaKdvmi = 'true' and (not ($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not ($eIhracatmi or $eMustahsilmi)">
             <td class="numeric kdvText">
-              <xsl:for-each select="cac:TaxTotal/cac:TaxSubtotal [cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode = '0015']">
-                <div class="asil item">
-                  <span class="ek-bilgi">
-                    <xsl:text>(</xsl:text>
-                  </span>
-                  <span class="kdvOrani">
-                    <xsl:text>%</xsl:text>
-                    <xsl:for-each select="cbc:Percent">
-                      <xsl:value-of select="format-number(., '##0,####', $numLocale)"/>
-                    </xsl:for-each>
-                  </span>
-                  <span class="ek-bilgi">
-                    <xsl:text>) </xsl:text>
-                  </span>
-                  <span class="kdv">
-                    <xsl:for-each select="cbc:TaxAmount">
-                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                    </xsl:for-each>
-                  </span>
-                </div>
-              </xsl:for-each>
+              <xsl:choose>
+                <xsl:when test="cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'SATIR_KDV_ORAN'] or cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'SATIR_KDV_BEDEL']">
+                    <div class="asil item">
+                      <xsl:for-each select="cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'SATIR_KDV_ORAN']">
+                        <span class="ek-bilgi"><xsl:text>(</xsl:text></span>
+                        <span class="kdvOrani">
+                          <xsl:text>%</xsl:text>
+                          <xsl:value-of select="format-number(., '##0,####', $numLocale)"/>
+                        </span>
+                        <span class="ek-bilgi"><xsl:text>) </xsl:text></span>
+                      </xsl:for-each>
+                      <xsl:for-each select="cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'SATIR_KDV_BEDEL']">
+                        <span class="kdv"><xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/></span>
+                      </xsl:for-each>
+                    </div>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:for-each select="cac:TaxTotal/cac:TaxSubtotal [cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode = '0015']">
+                    <div class="asil item">
+                      <span class="ek-bilgi"><xsl:text>(</xsl:text></span>
+                      <span class="kdvOrani">
+                        <xsl:text>%</xsl:text>
+                        <xsl:for-each select="cbc:Percent"><xsl:value-of select="format-number(., '##0,####', $numLocale)"/></xsl:for-each>
+                      </span>
+                      <span class="ek-bilgi"><xsl:text>) </xsl:text></span>
+                      <span class="kdv"><xsl:for-each select="cbc:TaxAmount"><xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/></xsl:for-each></span>
+                    </div>
+                </xsl:for-each>
+                </xsl:otherwise>
+              </xsl:choose>
               <xsl:if test="$xtevNode [cbc:TaxAmount != 0]">
                 <div class="tevkifat item">
                   <xsl:for-each select="$xtevNode [cbc:TaxAmount != 0]">
