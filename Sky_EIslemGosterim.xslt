@@ -1920,330 +1920,347 @@
     <xsl:variable name="topKdvBedel" select="sum($xkdvNodes/cbc:TaxAmount [. != 0])" />
     <xsl:variable name="topTevBedel" select="sum($xtevNodes/cbc:TaxAmount [. != 0])" />
     <table class="invoiceTableTotal">
-      <tbody class="normal">
-        <xsl:for-each select="cac:LegalMonetaryTotal/cbc:LineExtensionAmount">
-          <tr class="item">
-            <td class="etiket">Mal Hizmet Toplam Tutarı</td>
-            <td class="veri">
-              <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-              <xsl:call-template name="currency"/>
-            </td>
-          </tr>
-        </xsl:for-each>
-        <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_BRUT']/cbc:ID [. != 0]">
-          <tr class="item">
-            <td class="etiket">Mal Hizmet Toplam Tutarı</td>
-            <td class="veri">
-              <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-              <xsl:call-template name="currency"/>
-            </td>
-          </tr>
-        </xsl:for-each>
-        <xsl:for-each select="cac:AllowanceCharge [cbc:Amount and cbc:Amount != 0]">
-          <tr class="item">
-            <td class="etiket">
-              <xsl:choose>
-                <xsl:when test="cbc:ChargeIndicator = 'true'">
-                  <xsl:text>Dip Arttırım</xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:text>Dip İskonto</xsl:text>
-                </xsl:otherwise>
-              </xsl:choose>
-              <xsl:if test="cbc:MultiplierFactorNumeric and cbc:MultiplierFactorNumeric != 0">
-                <xsl:text> (%</xsl:text>
-                <xsl:value-of select="format-number(cbc:MultiplierFactorNumeric * 100, '###.##0,00', $numLocale)"/>
-                <xsl:text>)</xsl:text>
-              </xsl:if>
-            </td>
-            <td class="veri">
-              <xsl:for-each select="cbc:Amount">
-                <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                <xsl:call-template name="currency"/>
-              </xsl:for-each>
-            </td>
-          </tr>
-        </xsl:for-each>
-        <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_ISK']/cbc:ID [. != 0]">
-          <tr class="item">
-            <td class="etiket">Dip İskonto</td>
-            <td class="veri">
-              <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-              <xsl:call-template name="currency"/>
-            </td>
-          </tr>
-        </xsl:for-each>
-        <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_ART']/cbc:ID [. != 0]">
-          <tr class="item">
-            <td class="etiket">Dip Arttırım</td>
-            <td class="veri">
-              <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-              <xsl:call-template name="currency"/>
-            </td>
-          </tr>
-        </xsl:for-each>
-        <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_GEKAP']/cbc:ID [. != 0]">
-          <tr class="item">
-            <td class="etiket">Gekap Yans. Bedeli</td>
-            <td class="veri">
-              <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-              <xsl:call-template name="currency"/>
-            </td>
-          </tr>
-        </xsl:for-each>
-        <xsl:for-each select="cac:TaxTotal/cac:TaxSubtotal [cbc:TaxAmount != 0]">
-          <xsl:if test="($iskontoVeyaNakliyeVarmi = 'true' or $cokluKDVmi) and cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode = '0015'">
-            <tr class="item">
-              <td class="etiket">
-                Hesaplanan <xsl:value-of select="cac:TaxCategory/cac:TaxScheme/cbc:Name"/> (%<xsl:value-of select="cbc:Percent"/>) Matrah
-              </td>
-              <xsl:for-each select="cbc:TaxableAmount">
+      <xsl:choose>
+        <xsl:when test="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'OZEL_DIP']">
+          <tbody class="normal">
+            <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'OZEL_DIP']">
+              <tr class="item">
+                <td class="etiket"><xsl:value-of select="cbc:DocumentDescription" disable-output-escaping="true"/></td>
                 <td class="veri">
-                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                  <xsl:value-of select="format-number(cbc:ID, $bedelFormatStr, $numLocale)"/>
                   <xsl:call-template name="currency"/>
                 </td>
-              </xsl:for-each>
-            </tr>
-          </xsl:if>
-          <tr class="item">
-            <td class="etiket">
-              Hesaplanan <xsl:value-of select="cac:TaxCategory/cac:TaxScheme/cbc:Name"/> (%<xsl:value-of select="cbc:Percent"/>)
-              <!--<p>vergi tipi = <xsl:value-of select="cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode"/></p>-->
-              <xsl:if test="cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode = '0015'">
-                <xsl:variable name="oran" select="number(cbc:Percent)"/>
-                <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentTypeCode = 'DIP_VERGIORAN_POSTFIX' and number(cbc:DocumentType) = $oran]">
-                  <br/><span><xsl:value-of select="cbc:ID"/></span>
-                </xsl:for-each>
-              </xsl:if>
-            </td>
-            <xsl:for-each select="cbc:TaxAmount">
-              <td class="veri">
-                <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                <xsl:call-template name="currency"/>
-              </td>
+              </tr>
             </xsl:for-each>
-          </tr>
-        </xsl:for-each>
-        <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_KDV_20']/cbc:ID [. != 0]">
-          <xsl:call-template name="dipKdvSatirlariYaz">
-            <xsl:with-param name="oran" select="20"/>
-          </xsl:call-template>
-        </xsl:for-each>
-        <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_KDV_18']/cbc:ID [. != 0]">
-          <xsl:call-template name="dipKdvSatirlariYaz">
-            <xsl:with-param name="oran" select="18"/>
-          </xsl:call-template>
-        </xsl:for-each>
-        <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_KDV_10']/cbc:ID [. != 0]">
-          <xsl:call-template name="dipKdvSatirlariYaz">
-            <xsl:with-param name="oran" select="10"/>
-          </xsl:call-template>
-        </xsl:for-each>
-        <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_KDV_8']/cbc:ID [. != 0]">
-          <xsl:call-template name="dipKdvSatirlariYaz">
-            <xsl:with-param name="oran" select="8"/>
-          </xsl:call-template>
-        </xsl:for-each>
-        <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_KDV_1']/cbc:ID [. != 0]">
-          <xsl:call-template name="dipKdvSatirlariYaz">
-            <xsl:with-param name="oran" select="1"/>
-          </xsl:call-template>
-        </xsl:for-each>
-        <xsl:if test="$xtevNodes [cbc:TaxAmount != 0]">
-          <xsl:for-each select="$xtevNodes [cbc:TaxAmount != 0]">
-            <tr class="item">
-              <td class="etiket">Hesaplanan KDV Tevkifat (%<xsl:value-of select="cbc:Percent"/>)</td>
-              <td class="veri">
-                <xsl:value-of select="format-number(cbc:TaxAmount, $bedelFormatStr, $numLocale)"/>
-                <xsl:call-template name="currency"/>
-              </td>
-            </tr>
-          </xsl:for-each>
-          <tr class="item">
-            <td class="etiket">Beyan Edilen KDV</td>
-            <td class="veri">
-              <xsl:value-of select="format-number($topKdvBedel - $topTevBedel, $bedelFormatStr, $numLocale)"/>
-              <xsl:call-template name="currency"/>
-            </td>
-          </tr>
-        </xsl:if>
-        <xsl:for-each select="cac:LegalMonetaryTotal">
-          <xsl:for-each select="cbc:TaxInclusiveAmount">
-            <tr class="item">
-              <td class="etiket">Vergiler Dahil Toplam</td>
-              <td class="veri">
-                <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                <xsl:call-template name="currency"/>
-              </td>
-            </tr>
-          </xsl:for-each>
-          <xsl:for-each select="cbc:PayableAmount">
-            <tr class="item">
-              <td class="etiket">Ödenecek Tutar</td>
-              <td class="veri">
-                <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                <xsl:call-template name="currency"/>
-              </td>
-            </tr>
-          </xsl:for-each>
-        </xsl:for-each>
-        <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_SONUC']/cbc:ID [. != 0]">
-          <tr class="item">
-            <td class="etiket">Ödenecek Tutar</td>
-            <td class="veri">
-              <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-              <xsl:call-template name="currency"/>
-            </td>
-          </tr>
-        </xsl:for-each>
-      </tbody>
-      <tbody class="tlGosterim">
-        <xsl:for-each select="$xroot/cac:AdditionalDocumentReference/cbc:ID [normalize-space(.) != '']">
-          <xsl:choose>
-            <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_BRUTBEDEL'">
+          </tbody>
+        </xsl:when>
+        <xsl:otherwise>
+          <tbody class="normal">
+            <xsl:for-each select="cac:LegalMonetaryTotal/cbc:LineExtensionAmount">
               <tr class="item">
-                <td class="etiket">
-                  Mal Hizmet Toplam Tutarı (<span class="ek-bilgi">TL</span>)
-                </td>
-                <td class="veri">
-                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                  <xsl:text> TL</xsl:text>
-                </td>
-              </tr>
-            </xsl:when>
-            <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_ISKBEDEL'">
-              <tr class="item">
-                <td class="etiket">
-                  Dip İskonto (<span class="ek-bilgi">TL</span>)
-                </td>
-                <td class="veri">
-                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                  <xsl:text> TL</xsl:text>
-                </td>
-              </tr>
-            </xsl:when>
-            <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_ARTBEDEL'">
-              <tr class="item">
-                <td class="etiket">
-                  Dip Arttırım (<span class="ek-bilgi">TL</span>)
-                </td>
-                <td class="veri">
-                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                  <xsl:text> TL</xsl:text>
-                </td>
-              </tr>
-            </xsl:when>
-            <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_NAKBEDEL'">
-              <tr class="item">
-                <td class="etiket">
-                  Nakliye Bedeli (<span class="ek-bilgi">TL</span>)
-                </td>
-                <td class="veri">
-                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                  <xsl:text> TL</xsl:text>
-                </td>
-              </tr>
-            </xsl:when>
-            <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_GEKAP'">
-              <tr class="item">
-                <td class="etiket">
-                  Gekap Yans. Bedeli (<span class="ek-bilgi">TL</span>)
-                </td>
+                <td class="etiket">Mal Hizmet Toplam Tutarı</td>
                 <td class="veri">
                   <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
                   <xsl:call-template name="currency"/>
                 </td>
               </tr>
-            </xsl:when>
-            <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_VERGI'">
+            </xsl:for-each>
+            <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_BRUT']/cbc:ID [. != 0]">
               <tr class="item">
-                <td class="etiket">
-                  Hesaplanan <xsl:value-of select="parent::node()/cbc:DocumentTypeCode"/>
-                  (<span class="ek-bilgi">TL</span>)
-                </td>
+                <td class="etiket">Mal Hizmet Toplam Tutarı</td>
                 <td class="veri">
                   <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                  <xsl:text> TL</xsl:text>
+                  <xsl:call-template name="currency"/>
                 </td>
               </tr>
-            </xsl:when>
-            <!--<xsl:when test="parent::node()/cbc:DocumentType = 'DIP_DVZ_VERGI'">
+            </xsl:for-each>
+            <xsl:for-each select="cac:AllowanceCharge [cbc:Amount and cbc:Amount != 0]">
               <tr class="item">
                 <td class="etiket">
-                  <span class="asil">
-                    Hesaplanan <xsl:value-of select="parent::node()/cbc:DocumentTypeCode"/>
-                  </span>
-                  <span class="diger">
-                    (<span class="ek-bilgi">
-                      <xsl:value-of select="parent::node()/cbc:DocumentDescription"/>
-                    </span>)
-                  </span>
+                  <xsl:choose>
+                    <xsl:when test="cbc:ChargeIndicator = 'true'">
+                      <xsl:text>Dip Arttırım</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:text>Dip İskonto</xsl:text>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                  <xsl:if test="cbc:MultiplierFactorNumeric and cbc:MultiplierFactorNumeric != 0">
+                    <xsl:text> (%</xsl:text>
+                    <xsl:value-of select="format-number(cbc:MultiplierFactorNumeric * 100, '###.##0,00', $numLocale)"/>
+                    <xsl:text>)</xsl:text>
+                  </xsl:if>
                 </td>
                 <td class="veri">
-                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                  <xsl:value-of select="parent::node()/cbc:LocaleCode"/>
+                  <xsl:for-each select="cbc:Amount">
+                    <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                    <xsl:call-template name="currency"/>
+                  </xsl:for-each>
                 </td>
               </tr>
-            </xsl:when>-->
-            <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_TEVBEDEL'">
+            </xsl:for-each>
+            <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_ISK']/cbc:ID [. != 0]">
+              <tr class="item">
+                <td class="etiket">Dip İskonto</td>
+                <td class="veri">
+                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                  <xsl:call-template name="currency"/>
+                </td>
+              </tr>
+            </xsl:for-each>
+            <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_ART']/cbc:ID [. != 0]">
+              <tr class="item">
+                <td class="etiket">Dip Arttırım</td>
+                <td class="veri">
+                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                  <xsl:call-template name="currency"/>
+                </td>
+              </tr>
+            </xsl:for-each>
+            <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_GEKAP']/cbc:ID [. != 0]">
+              <tr class="item">
+                <td class="etiket">Gekap Yans. Bedeli</td>
+                <td class="veri">
+                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                  <xsl:call-template name="currency"/>
+                </td>
+              </tr>
+            </xsl:for-each>
+            <xsl:for-each select="cac:TaxTotal/cac:TaxSubtotal [cbc:TaxAmount != 0]">
+              <xsl:if test="($iskontoVeyaNakliyeVarmi = 'true' or $cokluKDVmi) and cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode = '0015'">
+                <tr class="item">
+                  <td class="etiket">
+                    Hesaplanan <xsl:value-of select="cac:TaxCategory/cac:TaxScheme/cbc:Name"/> (%<xsl:value-of select="cbc:Percent"/>) Matrah
+                  </td>
+                  <xsl:for-each select="cbc:TaxableAmount">
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:call-template name="currency"/>
+                    </td>
+                  </xsl:for-each>
+                </tr>
+              </xsl:if>
               <tr class="item">
                 <td class="etiket">
-                  Tevkifat Bedeli (<span class="ek-bilgi">TL</span>)
+                  Hesaplanan <xsl:value-of select="cac:TaxCategory/cac:TaxScheme/cbc:Name"/> (%<xsl:value-of select="cbc:Percent"/>)
+                  <!--<p>vergi tipi = <xsl:value-of select="cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode"/></p>-->
+                  <xsl:if test="cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode = '0015'">
+                    <xsl:variable name="oran" select="number(cbc:Percent)"/>
+                    <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentTypeCode = 'DIP_VERGIORAN_POSTFIX' and number(cbc:DocumentType) = $oran]">
+                      <br/><span><xsl:value-of select="cbc:ID"/></span>
+                    </xsl:for-each>
+                  </xsl:if>
                 </td>
-                <td class="veri">
-                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                  <xsl:text> TL</xsl:text>
-                </td>
+                <xsl:for-each select="cbc:TaxAmount">
+                  <td class="veri">
+                    <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                    <xsl:call-template name="currency"/>
+                  </td>
+                </xsl:for-each>
               </tr>
-            </xsl:when>
-            <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_KLREYON'">
+            </xsl:for-each>
+            <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_KDV_20']/cbc:ID [. != 0]">
+              <xsl:call-template name="dipKdvSatirlariYaz">
+                <xsl:with-param name="oran" select="20"/>
+              </xsl:call-template>
+            </xsl:for-each>
+            <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_KDV_18']/cbc:ID [. != 0]">
+              <xsl:call-template name="dipKdvSatirlariYaz">
+                <xsl:with-param name="oran" select="18"/>
+              </xsl:call-template>
+            </xsl:for-each>
+            <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_KDV_10']/cbc:ID [. != 0]">
+              <xsl:call-template name="dipKdvSatirlariYaz">
+                <xsl:with-param name="oran" select="10"/>
+              </xsl:call-template>
+            </xsl:for-each>
+            <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_KDV_8']/cbc:ID [. != 0]">
+              <xsl:call-template name="dipKdvSatirlariYaz">
+                <xsl:with-param name="oran" select="8"/>
+              </xsl:call-template>
+            </xsl:for-each>
+            <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_KDV_1']/cbc:ID [. != 0]">
+              <xsl:call-template name="dipKdvSatirlariYaz">
+                <xsl:with-param name="oran" select="1"/>
+              </xsl:call-template>
+            </xsl:for-each>
+            <xsl:if test="$xtevNodes [cbc:TaxAmount != 0]">
+              <xsl:for-each select="$xtevNodes [cbc:TaxAmount != 0]">
+                <tr class="item">
+                  <td class="etiket">Hesaplanan KDV Tevkifat (%<xsl:value-of select="cbc:Percent"/>)</td>
+                  <td class="veri">
+                    <xsl:value-of select="format-number(cbc:TaxAmount, $bedelFormatStr, $numLocale)"/>
+                    <xsl:call-template name="currency"/>
+                  </td>
+                </tr>
+              </xsl:for-each>
               <tr class="item">
-                <td class="etiket">
-                  Reyon Bedeli (<span class="ek-bilgi">TL</span>)
-                </td>
+                <td class="etiket">Beyan Edilen KDV</td>
                 <td class="veri">
-                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                  <xsl:text> TL</xsl:text>
+                  <xsl:value-of select="format-number($topKdvBedel - $topTevBedel, $bedelFormatStr, $numLocale)"/>
+                  <xsl:call-template name="currency"/>
                 </td>
               </tr>
-            </xsl:when>
-            <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_KLDAMGA'">
+            </xsl:if>
+            <xsl:for-each select="cac:LegalMonetaryTotal">
+              <xsl:for-each select="cbc:TaxInclusiveAmount">
+                <tr class="item">
+                  <td class="etiket">Vergiler Dahil Toplam</td>
+                  <td class="veri">
+                    <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                    <xsl:call-template name="currency"/>
+                  </td>
+                </tr>
+              </xsl:for-each>
+              <xsl:for-each select="cbc:PayableAmount">
+                <tr class="item">
+                  <td class="etiket">Ödenecek Tutar</td>
+                  <td class="veri">
+                    <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                    <xsl:call-template name="currency"/>
+                  </td>
+                </tr>
+              </xsl:for-each>
+            </xsl:for-each>
+            <xsl:for-each select="cac:AdditionalDocumentReference [cbc:DocumentType = 'DIP_SONUC']/cbc:ID [. != 0]">
               <tr class="item">
-                <td class="etiket">
-                  Damga Bedeli (<span class="ek-bilgi">TL</span>)
-                </td>
+                <td class="etiket">Ödenecek Tutar</td>
                 <td class="veri">
                   <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                  <xsl:text> TL</xsl:text>
+                  <xsl:call-template name="currency"/>
                 </td>
               </tr>
-            </xsl:when>
-            <xsl:when test="$vergilerDahilToplamTutarGosterilirmi and parent::node()/cbc:DocumentType = 'DIP_TL_VERGIDAHILBEDEL'">
-              <tr class="item">
-                <td class="etiket">
-                  Vergiler Dahil Toplam (<span class="ek-bilgi">TL</span>)
-                </td>
-                <td class="veri">
-                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                  <xsl:text> TL</xsl:text>
-                </td>
-              </tr>
-            </xsl:when>
-            <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_SONUCBEDEL'">
-              <tr class="item">
-                <td class="etiket">
-                  Ödenecek Tutar (<span class="ek-bilgi">TL</span>)
-                </td>
-                <td class="veri">
-                  <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-                  <xsl:text> TL</xsl:text>
-                </td>
-              </tr>
-            </xsl:when>
-            <xsl:otherwise></xsl:otherwise>
-          </xsl:choose>
-        </xsl:for-each>
-      </tbody>
+            </xsl:for-each>
+          </tbody>
+          <tbody class="tlGosterim">
+            <xsl:for-each select="$xroot/cac:AdditionalDocumentReference/cbc:ID [normalize-space(.) != '']">
+              <xsl:choose>
+                <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_BRUTBEDEL'">
+                  <tr class="item">
+                    <td class="etiket">
+                      Mal Hizmet Toplam Tutarı (<span class="ek-bilgi">TL</span>)
+                    </td>
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:text> TL</xsl:text>
+                    </td>
+                  </tr>
+                </xsl:when>
+                <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_ISKBEDEL'">
+                  <tr class="item">
+                    <td class="etiket">
+                      Dip İskonto (<span class="ek-bilgi">TL</span>)
+                    </td>
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:text> TL</xsl:text>
+                    </td>
+                  </tr>
+                </xsl:when>
+                <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_ARTBEDEL'">
+                  <tr class="item">
+                    <td class="etiket">
+                      Dip Arttırım (<span class="ek-bilgi">TL</span>)
+                    </td>
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:text> TL</xsl:text>
+                    </td>
+                  </tr>
+                </xsl:when>
+                <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_NAKBEDEL'">
+                  <tr class="item">
+                    <td class="etiket">
+                      Nakliye Bedeli (<span class="ek-bilgi">TL</span>)
+                    </td>
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:text> TL</xsl:text>
+                    </td>
+                  </tr>
+                </xsl:when>
+                <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_GEKAP'">
+                  <tr class="item">
+                    <td class="etiket">
+                      Gekap Yans. Bedeli (<span class="ek-bilgi">TL</span>)
+                    </td>
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:call-template name="currency"/>
+                    </td>
+                  </tr>
+                </xsl:when>
+                <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_VERGI'">
+                  <tr class="item">
+                    <td class="etiket">
+                      Hesaplanan <xsl:value-of select="parent::node()/cbc:DocumentTypeCode"/>
+                      (<span class="ek-bilgi">TL</span>)
+                    </td>
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:text> TL</xsl:text>
+                    </td>
+                  </tr>
+                </xsl:when>
+                <!--<xsl:when test="parent::node()/cbc:DocumentType = 'DIP_DVZ_VERGI'">
+                  <tr class="item">
+                    <td class="etiket">
+                      <span class="asil">
+                        Hesaplanan <xsl:value-of select="parent::node()/cbc:DocumentTypeCode"/>
+                      </span>
+                      <span class="diger">
+                        (<span class="ek-bilgi">
+                          <xsl:value-of select="parent::node()/cbc:DocumentDescription"/>
+                        </span>)
+                      </span>
+                    </td>
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:value-of select="parent::node()/cbc:LocaleCode"/>
+                    </td>
+                  </tr>
+                </xsl:when>-->
+                <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_TEVBEDEL'">
+                  <tr class="item">
+                    <td class="etiket">
+                      Tevkifat Bedeli (<span class="ek-bilgi">TL</span>)
+                    </td>
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:text> TL</xsl:text>
+                    </td>
+                  </tr>
+                </xsl:when>
+                <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_KLREYON'">
+                  <tr class="item">
+                    <td class="etiket">
+                      Reyon Bedeli (<span class="ek-bilgi">TL</span>)
+                    </td>
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:text> TL</xsl:text>
+                    </td>
+                  </tr>
+                </xsl:when>
+                <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_KLDAMGA'">
+                  <tr class="item">
+                    <td class="etiket">
+                      Damga Bedeli (<span class="ek-bilgi">TL</span>)
+                    </td>
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:text> TL</xsl:text>
+                    </td>
+                  </tr>
+                </xsl:when>
+                <xsl:when test="$vergilerDahilToplamTutarGosterilirmi and parent::node()/cbc:DocumentType = 'DIP_TL_VERGIDAHILBEDEL'">
+                  <tr class="item">
+                    <td class="etiket">
+                      Vergiler Dahil Toplam (<span class="ek-bilgi">TL</span>)
+                    </td>
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:text> TL</xsl:text>
+                    </td>
+                  </tr>
+                </xsl:when>
+                <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_SONUCBEDEL'">
+                  <tr class="item">
+                    <td class="etiket">
+                      Ödenecek Tutar (<span class="ek-bilgi">TL</span>)
+                    </td>
+                    <td class="veri">
+                      <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                      <xsl:text> TL</xsl:text>
+                    </td>
+                  </tr>
+                </xsl:when>
+                <xsl:otherwise></xsl:otherwise>
+              </xsl:choose>
+            </xsl:for-each>
+          </tbody>
+        </xsl:otherwise>
+      </xsl:choose>
     </table>
   </xsl:template>
   <xsl:template name="party">
