@@ -807,9 +807,7 @@
                 <xsl:call-template name="bankaTable"/>
               </xsl:if>
               <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'BANKA_HTML_BILGI']">
-                <div class="banka-htmlBilgi">
-                  <xsl:call-template name="htmlBilgi"/>
-                </div>
+                <div class="banka-htmlBilgi"><xsl:call-template name="htmlBilgi"/></div>
               </xsl:for-each>
             </div>
             <div class="bottom">
@@ -821,7 +819,9 @@
               <xsl:call-template name="vioBilgiFooter"/>
             </div>
             <div class="alt-bilgi ustalt-bilgi">
-              <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'ALT_BILGI']"><xsl:call-template name="htmlBilgi"/></xsl:for-each>
+              <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'ALT_BILGI']">
+                <xsl:call-template name="htmlBilgi"/>
+              </xsl:for-each>
             </div>
           </div>
         </xsl:for-each>
@@ -833,7 +833,50 @@
       </body>
     </html>
   </xsl:template>
-  
+  <xsl:template name="html-escape">
+    <xsl:param name="text"/>
+
+    <!-- [lt] veya [gt] olup olmadığını kontrol et -->
+    <xsl:variable name="hasLt" select="contains($text, '[lt]')" />
+    <xsl:variable name="hasGt" select="contains($text, '[gt]')" />
+    <xsl:variable name="hasMore" select="$hasLt or $hasGt" />
+
+    <!-- Eğer [lt] varsa, ilkini değiştir -->
+    <xsl:variable name="step1">
+      <xsl:choose>
+        <xsl:when test="$hasLt">
+          <xsl:value-of select="concat(substring-before($text, '[lt]'), '&lt;', substring-after($text, '[lt]'))" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$text"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
+    <!-- Eğer [gt] varsa, ilkini değiştir -->
+    <xsl:variable name="step2">
+      <xsl:choose>
+        <xsl:when test="$hasGt">
+          <xsl:value-of select="concat(substring-before($step1, '[gt]'), '&gt;', substring-after($step1, '[gt]'))" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$step1"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
+    <!-- Eğer hala [lt] veya [gt] varsa, recursive olarak tekrar çağır -->
+    <xsl:choose>
+      <xsl:when test="$hasMore">
+        <xsl:call-template name="html-escape">
+          <xsl:with-param name="text" select="$step2"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$step2" disable-output-escaping="yes"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
   <xsl:template name="date">
     <xsl:value-of select="substring(.,9,2)"/>.<xsl:value-of select="substring(.,6,2)"/>.<xsl:value-of select="substring(.,1,4)"/>
   </xsl:template>
@@ -2498,14 +2541,16 @@
     </div>
   </xsl:template>
   <xsl:template name="noteLine">
-    <xsl:if test=". != 'İrsaliye yerine geçer.'"><div class="note"><xsl:value-of select="." disable-output-escaping="yes"/></div></xsl:if>
+    <xsl:if test=". != 'İrsaliye yerine geçer.'">
+      <div class="note"><xsl:call-template name="html-escape"><xsl:with-param name="text" select="."/></xsl:call-template></div>
+    </xsl:if>
   </xsl:template>
   <xsl:template name="bakiye">
     <xsl:param name="cssPrefix"/>
     <xsl:param name="etiketPrefix"/>
     <div class="$cssPrefix bakiye">
       <span class="etiket">Bu Fatura <xsl:value-of select="$etiketPrefix"/> Bakiye: </span>
-      <span class="veri"><xsl:value-of select="." disable-output-escaping="yes"/></span>
+      <span class="veri"><xsl:call-template name="html-escape"><xsl:with-param name="text" select="."/></xsl:call-template></span>
     </div>
   </xsl:template>
   <xsl:template name="yalnizYazisi">
@@ -2548,7 +2593,7 @@
     <xsl:if test="substring(., 1, 3) != 'POL'">
       <tr class="aciklamaSatiri" data-rowindex="{$rowNumber}">
         <td class="aciklamaText" colspan="1000">
-          <xsl:value-of select="." disable-output-escaping="yes"/>
+          <xsl:call-template name="html-escape"><xsl:with-param name="text" select="."/></xsl:call-template>
         </td>
       </tr>
     </xsl:if>
@@ -2564,7 +2609,7 @@
     <xsl:choose>
       <xsl:when test="$xroot/cac:AdditionalDocumentReference[cbc:DocumentTypeCode = 'ETICARET_DIPNOT']">
         <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentTypeCode = 'ETICARET_DIPNOT']">
-          <div class="note note-ek"><xsl:value-of select="cbc:ID" disable-output-escaping="yes"/></div>
+          <div class="note note-ek"><xsl:call-template name="html-escape"><xsl:with-param name="text" select="cbc:ID"/></xsl:call-template></div>
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
@@ -2819,12 +2864,16 @@
   <xsl:template name="htmlBilgi">
     <xsl:choose>
       <xsl:when test="cac:Attachment/cbc:EmbeddedDocumentBinaryObject">
-        <xsl:value-of select="cac:Attachment/cbc:EmbeddedDocumentBinaryObject" disable-output-escaping="yes"/>
+        <xsl:call-template name="html-escape"><xsl:with-param name="text" select="cac:Attachment/cbc:EmbeddedDocumentBinaryObject"/></xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
         <xsl:choose>
-          <xsl:when test="cbc:DocumentDescription and  cbc:DocumentDescription != ''"><xsl:value-of select="cbc:DocumentDescription" disable-output-escaping="yes"/></xsl:when>
-          <xsl:otherwise><xsl:value-of select="cbc:DocumentTypeCode" disable-output-escaping="yes"/></xsl:otherwise>
+          <xsl:when test="cbc:DocumentDescription and cbc:DocumentDescription != ''">
+            <xsl:call-template name="html-escape"><xsl:with-param name="text" select="cbc:DocumentDescription"/></xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:call-template name="html-escape"><xsl:with-param name="text" select="cbc:DocumentTypeCode"/></xsl:call-template>
+          </xsl:otherwise>
         </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
