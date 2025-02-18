@@ -1925,7 +1925,7 @@
           <tbody class="normal">
             <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'OZEL_DIP']">
               <tr class="item">
-                <td class="etiket"><xsl:value-of select="cbc:DocumentDescription" disable-output-escaping="true"/></td>
+                <td class="etiket"><xsl:value-of select="cbc:DocumentDescription" disable-output-escaping="yes"/></td>
                 <td class="veri">
                   <xsl:value-of select="format-number(cbc:ID, $bedelFormatStr, $numLocale)"/>
                   <xsl:call-template name="currency"/>
