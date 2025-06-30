@@ -99,7 +99,8 @@
   <xsl:param name="_vergilerDahilToplamTutarGosterilirmi" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'DIPTE_VERGILER_DAHIL_TOPLAM_TUTAR']"/>
   <xsl:param name="cokluKDVmi" select="count($xroot/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode [. = '0015']) &gt; 1"/>
   <xsl:param name="tevkifatlimi" select="count($xroot//cac:WithholdingTaxTotal/cac:TaxSubtotal [cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode &gt;= 600 and cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode &lt;= 700]) != 0" />
-
+  <xsl:param name="_sipRefGosterimKurali" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SIPREF_GOSTERIM_KURALI']" />
+  
   <xsl:variable name="dovizlimi"
     select="not ($xroot/cbc:DocumentCurrencyCode = 'TRL' or $xroot/cbc:DocumentCurrencyCode = 'TRY')"/>
   <xsl:variable name="dvKod">
@@ -474,6 +475,16 @@
   </xsl:variable>
   <xsl:variable name="ciftSatirmi"
       select="$satirGosterimKurali = 'C'"/>
+  <xsl:variable name="sipRefGosterimKurali">
+    <xsl:choose>
+      <xsl:when test="$_sipRefGosterimKurali">
+        <xsl:value-of select="$_sipRefGosterimKurali"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text></xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   
   
   <xsl:template match="/">
@@ -1183,20 +1194,57 @@
           </xsl:when>
         </xsl:choose>
         <xsl:for-each select="$xroot/cac:OrderReference">
-          <tr class="siparis-tarihVeNox">
-            <td class="etiket">Sipariş Tarih/No:</td>
-            <td class="veri">
-              <xsl:for-each select="cbc:IssueDate">
-                <span class="tarih">
-                  <xsl:call-template name="date"/>
-                </span>
-                <span class="separator">: </span>
-              </xsl:for-each>
-              <span class="nox">
-                <xsl:value-of select="cbc:ID"/>
-              </span>
-            </td>
-          </tr>
+          <xsl:choose>
+            <xsl:when test="$sipRefGosterimKurali = 'UA'">
+              <tr class="siparis-tarihVeNox-ortak siparis-tarih">
+                <td class="etiket">Sipariş Tarih:</td>
+                <td class="veri">
+                  <xsl:for-each select="cbc:IssueDate">
+                    <span class="tarih">
+                      <xsl:call-template name="date"/>
+                    </span>
+                  </xsl:for-each>
+                </td>
+              </tr>
+              <tr class="siparis-tarihVeNox-ortak siparis-tarih">
+                <td class="etiket">Sipariş No:</td>
+                <td class="veri">
+                  <xsl:for-each select="cbc:IssueDate">
+                    <span class="nox">
+                      <xsl:value-of select="cbc:ID"/>
+                    </span>
+                  </xsl:for-each>
+                </td>
+              </tr>
+            </xsl:when>
+            <xsl:otherwise>
+              <tr class="siparis-tarihVeNox-ortak siparis-tarihVeNox">
+                <td class="etiket">
+                  <xsl:choose>
+                    <xsl:when test="$sipRefGosterimKurali = 'SN'">
+                      <xsl:text>Sipariş No:</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:text>Sipariş Tarih/No:</xsl:text>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </td>
+                <td class="veri">
+                  <xsl:if test="not($sipRefGosterimKurali = 'SN')">
+                    <xsl:for-each select="cbc:IssueDate">
+                      <span class="tarih">
+                        <xsl:call-template name="date"/>
+                      </span>
+                      <span class="separator">: </span>
+                    </xsl:for-each>
+                  </xsl:if>
+                  <span class="nox">
+                    <xsl:value-of select="cbc:ID"/>
+                  </span>
+                </td>
+              </tr>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:for-each>
         <xsl:for-each select="$xroot/cac:DespatchDocumentReference">
           <tr class="irsaliye-tarihVeNox">
