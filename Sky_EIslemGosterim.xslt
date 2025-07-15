@@ -2437,12 +2437,22 @@
         </xsl:for-each>
       </div>
       <div class="item">
-        <xsl:for-each select="cac:PartyIdentification/cbc:ID [@schemeID = 'KEPADRESI' and not(. = '' or . = '.')]">
+        <xsl:for-each select="cac:PartyIdentification/cbc:ID [@schemeID = 'KEP' and not(. = '' or . = '.')]">
           <span class="sub-item">
             <span class="etiket">KEP Adresi: </span>
             <span class="veri"><xsl:value-of select="."/></span>
           </span>
         </xsl:for-each>
+        <xsl:if test="$isSender = 'true'">
+          <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentTypeCode = 'KEP']/cbc:ID">
+            <span class="sub-item">
+              <span class="etiket">KEP Adresi: </span>
+              <span class="veri">
+                <xsl:value-of select="."/>
+              </span>
+            </span>
+          </xsl:for-each>
+        </xsl:if>
       </div>
       <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'MUSTAHSIL_BILGI']">
         <div class="item mustahsilBilgi">
