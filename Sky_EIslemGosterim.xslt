@@ -573,17 +573,22 @@
             .paper .invoiceTableDetail tr.detay.satir1 { font-weight: bold; background: #f5f5f5; border: 2px solid #ececec }
             .paper .invoiceTableDetail tr.detay.satir1 td { padding-top: 10px }
           </xsl:if>
-          .paper .invoiceTableDetail tbody tr td > * { min-width: max-content }
+          /*.paper .invoiceTableDetail tbody tr td > * { min-width: max-content }*/
+          .paper .invoiceTableDetail tbody tr td:not(.numeric) {
+            white-space: normal;         /* IE'nin wrap yapabilmesi için şart */
+            word-wrap: break-word;       /* IE destekler */
+            overflow-wrap: break-word    /* Modern tarayıcılar için */
+          }
           .paper .invoiceTableDetail tbody tr td.numeric { text-align: right }
-          .paper .invoiceTableDetail tr td { max-width: 130px }
+          .paper .invoiceTableDetail tr td { max-width: 130px; padding: 5px }
           .paper .invoiceTableDetail tr td.rowNumber { width: 13px }
 				  .paper .invoiceTableDetail tr td.barkod,
-          .paper .invoiceTableDetail tr td.shKod { width: 130px; overflow-wrap: anywhere }
+            .paper .invoiceTableDetail tr td.shKod { width: 100px; overflow-wrap: anywhere !important }
 				  .paper .invoiceTableDetail tr td.shAdi { min-width: 150px; max-width: unset; width: -webkit-fill-available }
           .paper .invoiceTableDetail tr td.miktar { min-width: 60px; max-width: 90px }
-          .paper .invoiceTableDetail tr td.fiyat,
-          .paper .invoiceTableDetail tr td.netFiyat,
-          .paper .invoiceTableDetail tr td.dvFiyat { min-width: 60px; max-width: 90px }
+            .paper .invoiceTableDetail tr td.fiyat,
+            .paper .invoiceTableDetail tr td.netFiyat,
+            .paper .invoiceTableDetail tr td.dvFiyat { min-width: 60px; max-width: 90px }
           .paper .invoiceTableDetail tr td.iskonto { text-align: center !important; width: 60px; max-width: 80px }
           .paper .invoiceTableDetail tr td.iskonto > .item .sub-item:not(:first-child) { margin-left: 5px }
           .paper .invoiceTableDetail tr td.kdvText { width: 80px; <xsl:if test="$tevkifatlimi">width: 150px</xsl:if> }
@@ -2443,16 +2448,14 @@
             <span class="veri"><xsl:value-of select="."/></span>
           </span>
         </xsl:for-each>
-        <xsl:if test="$isSender = 'true'">
-          <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentTypeCode = 'KEP']/cbc:ID">
-            <span class="sub-item">
-              <span class="etiket">KEP Adresi: </span>
-              <span class="veri">
-                <xsl:value-of select="."/>
-              </span>
+        <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentTypeCode = 'KEP']/cbc:ID">
+          <span class="sub-item">
+            <span class="etiket">KEP Adresi: </span>
+            <span class="veri">
+              <xsl:value-of select="."/>
             </span>
-          </xsl:for-each>
-        </xsl:if>
+          </span>
+        </xsl:for-each>
       </div>
       <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'MUSTAHSIL_BILGI']">
         <div class="item mustahsilBilgi">
