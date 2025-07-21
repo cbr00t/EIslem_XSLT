@@ -2448,7 +2448,7 @@
             <span class="veri"><xsl:value-of select="."/></span>
           </span>
         </xsl:for-each>
-        <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentTypeCode = 'KEP']/cbc:ID">
+        <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'KEP']/cbc:ID">
           <span class="sub-item">
             <span class="etiket">KEP Adresi: </span>
             <span class="veri">
