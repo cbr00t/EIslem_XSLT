@@ -2441,22 +2441,26 @@
           </span>
         </xsl:for-each>
       </div>
-      <div class="item">
-        <xsl:for-each select="cac:PartyIdentification/cbc:ID [@schemeID = 'KEP' and not(. = '' or . = '.')]">
-          <span class="sub-item">
-            <span class="etiket">KEP Adresi: </span>
-            <span class="veri"><xsl:value-of select="."/></span>
-          </span>
-        </xsl:for-each>
-        <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'KEP']/cbc:ID">
-          <span class="sub-item">
-            <span class="etiket">KEP Adresi: </span>
-            <span class="veri">
-              <xsl:value-of select="."/>
+      <xsl:if test="$isSender = 'true'">
+        <div class="item">
+          <xsl:for-each select="cac:PartyIdentification/cbc:ID [@schemeID = 'KEP' and not(. = '' or . = '.')]">
+            <span class="sub-item">
+              <span class="etiket">KEP Adresi: </span>
+              <span class="veri">
+                <xsl:value-of select="."/>
+              </span>
             </span>
-          </span>
-        </xsl:for-each>
-      </div>
+          </xsl:for-each>
+          <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'KEP']/cbc:ID">
+            <span class="sub-item">
+              <span class="etiket">KEP Adresi: </span>
+              <span class="veri">
+                <xsl:value-of select="."/>
+              </span>
+            </span>
+          </xsl:for-each>
+        </div>
+      </xsl:if>
       <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'MUSTAHSIL_BILGI']">
         <div class="item mustahsilBilgi">
           <span class="sub-item">
