@@ -2441,26 +2441,32 @@
           </span>
         </xsl:for-each>
       </div>
-      <xsl:if test="$isSender = 'true'">
-        <div class="item">
-          <xsl:for-each select="cac:PartyIdentification/cbc:ID [@schemeID = 'KEP' and not(. = '' or . = '.')]">
+      <xsl:choose>
+        <xsl:when test="$isSender = 'true'">
+          <div class="item">
+            <xsl:for-each select="cac:PartyIdentification/cbc:ID [@schemeID = 'KEP' and not(. = '' or . = '.')]">
+              <span class="sub-item">
+                <span class="etiket">KEP Adresi: </span>
+                <span class="veri"><xsl:value-of select="."/></span>
+              </span>
+            </xsl:for-each>
+            <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'KEP']/cbc:ID">
+              <span class="sub-item">
+                <span class="etiket">KEP Adresi: </span>
+                <span class="veri"><xsl:value-of select="."/></span>
+              </span>
+            </xsl:for-each>
+          </div>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'ALICIKEP']/cbc:ID">
             <span class="sub-item">
               <span class="etiket">KEP Adresi: </span>
-              <span class="veri">
-                <xsl:value-of select="."/>
-              </span>
+              <span class="veri"><xsl:value-of select="."/></span>
             </span>
           </xsl:for-each>
-          <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'KEP']/cbc:ID">
-            <span class="sub-item">
-              <span class="etiket">KEP Adresi: </span>
-              <span class="veri">
-                <xsl:value-of select="."/>
-              </span>
-            </span>
-          </xsl:for-each>
-        </div>
-      </xsl:if>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'MUSTAHSIL_BILGI']">
         <div class="item mustahsilBilgi">
           <span class="sub-item">
