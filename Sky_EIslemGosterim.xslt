@@ -1517,7 +1517,7 @@
             <xsl:if test="$fiyatGosterimKurali = 'HP' and $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'NET_FIYAT']">
               <td class="numeric netFiyat">Net Fiyat</td>
             </xsl:if>
-            <xsl:if test="$dovizGosterimKurali = 'X' and $dvKur != ''">
+            <!--<xsl:if test="$dovizGosterimKurali = 'X' and $dvKur != ''">
               <td class="numeric dvFiyat">Birim Dv. Fiyat</td>
             </xsl:if>
             <xsl:if test="
@@ -1525,7 +1525,7 @@
                 $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ARTORANLARGORUNUM'] or
                 ($satirdaIskBedelmi = 'true' and $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ISKTOPBEDELGORUNUM'])">
               <td class="numeric iskonto">İskonto</td>
-            </xsl:if>
+            </xsl:if>-->
             <xsl:if test="$satirdaKdvmi = 'true' and (not ($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not ($eIhracatmi or $eMustahsilmi)">
               <td class="numeric kdvText">KDV</td>
             </xsl:if>
@@ -1714,7 +1714,7 @@
             </xsl:for-each>
             <xsl:for-each select="cac:Shipment/cac:GoodsItem/cac:InvoiceLine/cac:Price/cbc:PriceAmount">
               <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
-              <xsl:call-template name="currency"/>
+              <!--<xsl:call-template name="currency"/>-->
             </xsl:for-each>
             <xsl:text> </xsl:text>
           </td>
@@ -1726,15 +1726,14 @@
             </xsl:for-each>
             <xsl:text> </xsl:text>
           </xsl:if>
-          <xsl:if test="$dovizGosterimKurali = 'X' and $dvKur != ''">
+          <!--<xsl:if test="$dovizGosterimKurali = 'X' and $dvKur != ''">
             <td class="numeric dvFiyat">
-              <xsl:value-of select="format-number(cac:Price/cbc:PriceAmount div $dvKur, $fiyatFormatStr, $numLocale)"/>
-              <xsl:value-of select="format-number(cac:Shipment/cac:GoodsItem/cac:InvoiceLine/cac:Price/cbc:PriceAmount div $dvKur, $fiyatFormatStr, $numLocale)"/>
-              <xsl:value-of select="$xroot/cac:PricingExchangeRate/cbc:SourceCurrencyCode"/>
+              <xsl:value-of select="format-number(cac:Price/cbc:PriceAmount, $fiyatFormatStr, $numLocale)"/>
+              <xsl:value-of select="format-number(cac:Shipment/cac:GoodsItem/cac:InvoiceLine/cac:Price/cbc:PriceAmount, $fiyatFormatStr, $numLocale)"/>
               <xsl:text> </xsl:text>
             </td>
             <xsl:text> </xsl:text>
-          </xsl:if>
+          </xsl:if>-->
           <xsl:if test="
                 $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ISKORANLARGORUNUM'] or
                 $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ARTORANLARGORUNUM'] or
