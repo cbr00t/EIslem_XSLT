@@ -1519,13 +1519,13 @@
             </xsl:if>
             <!--<xsl:if test="$dovizGosterimKurali = 'X' and $dvKur != ''">
               <td class="numeric dvFiyat">Birim Dv. Fiyat</td>
-            </xsl:if>
+            </xsl:if>-->
             <xsl:if test="
                 $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ISKORANLARGORUNUM'] or
                 $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ARTORANLARGORUNUM'] or
                 ($satirdaIskBedelmi = 'true' and $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ISKTOPBEDELGORUNUM'])">
               <td class="numeric iskonto">İskonto</td>
-            </xsl:if>-->
+            </xsl:if>
             <xsl:if test="$satirdaKdvmi = 'true' and (not ($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not ($eIhracatmi or $eMustahsilmi)">
               <td class="numeric kdvText">KDV</td>
             </xsl:if>
