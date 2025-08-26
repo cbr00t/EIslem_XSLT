@@ -525,6 +525,8 @@
           .paper .firmaLogo { } .paper .islakImza { } .paper .kase { }
           .paper .qrcodeImage-parent { text-align: right; position: relative; width: 200px; height: 200px; margin: -10px 0 0 0; padding: 10px; z-index: 0 }
           .paper .qrcodeImage { width: 100%; height: 100% }
+          .paper .qrcodeImage_alt-parent { position: relative; width: 200px; height: 200px; margin: 3px 0 0 0; padding: 10px; z-index: 0 }
+          .paper .qrcodeImage_alt { width: 100%; height: 100% }
           .paper .right .firmaLogo,
           .paper .right .islakImza,
           .paper .right .kase { max-height: 100px; padding: 8px }
@@ -839,9 +841,12 @@
                 <xsl:call-template name="htmlBilgi"/>
               </xsl:for-each>
             </div>
+            <xsl:call-template name="qrCode_alt"/>
           </div>
         </xsl:for-each>
-        <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'BODY_SON']"><xsl:call-template name="htmlBilgi"/></xsl:for-each>
+        <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'BODY_SON']">
+          <xsl:call-template name="htmlBilgi"/>
+        </xsl:for-each>
         <!--<script>
             let e1 = document.getElementsByClassName('invoiceInfoTable')[0], e2 = document.getElementsByClassName('islakImza')[0];
             swapElements(e1, e2)
@@ -2585,6 +2590,43 @@
           <script><![CDATA[
               const text = `{cbc:DocumentTypeCode}`;
               new QRCode(document.getElementsByClassName("qrcodeImage")[0], { width: 150, height: 150, correctLevel : QRCode.CorrectLevel.L, colorDark : "#000000", colorLight : "white" }).makeCode(text);
+          ]]></script>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:template>
+  <xsl:template name="qrCode_alt">
+    <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'KAREKOD_IMG_ALT']">
+      <xsl:choose>
+        <xsl:when test="cbc:DocumentTypeCode = 'dynamic'">
+          <div class="qrcodeImage_alt-parent"><img class="qrcodeImage_alt" align="center" src="[KAREKOD_IMG_ALT]"></img></div>
+        </xsl:when>
+        <xsl:when test="cac:Attachment/cbc:EmbeddedDocumentBinaryObject">
+          <xsl:for-each select="cac:Attachment/cbc:EmbeddedDocumentBinaryObject">
+            <div class="qrcodeImage_alt-parent"><img class="qrcodeImage_alt" align="center" src="data:{@mimeCode};base64,{.}"></img></div>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <div class="qrcodeImage_alt-parent"><img class="qrcodeImage_alt" align="center" src="{cbc:DocumentTypeCode}"></img></div>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+    <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'KAREKOD_DATA_ALT']">
+      <xsl:choose>
+        <xsl:when test="cac:Attachment/cbc:EmbeddedDocumentBinaryObject">
+          <xsl:for-each select="cac:Attachment/cbc:EmbeddedDocumentBinaryObject">
+            <div class="qrcodeImage_alt-parent"><div class="qrcodeImage_alt" align="center"/></div>
+            <script><![CDATA[
+              const text = Base64.decode(`{.}`);
+              new QRCode(document.getElementsByClassName("qrcodeImage_alt")[0], { width: 150, height: 150, correctLevel : QRCode.CorrectLevel.L, colorDark : "#000000", colorLight : "white" }).makeCode(text);
+            ]]></script>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <div class="qrcodeImage_alt-parent"><div class="qrcodeImage_alt" align="center"/></div>
+          <script><![CDATA[
+              const text = `{cbc:DocumentTypeCode}`;
+              new QRCode(document.getElementsByClassName("qrcodeImage_alt")[0], { width: 150, height: 150, correctLevel : QRCode.CorrectLevel.L, colorDark : "#000000", colorLight : "white" }).makeCode(text);
           ]]></script>
         </xsl:otherwise>
       </xsl:choose>
