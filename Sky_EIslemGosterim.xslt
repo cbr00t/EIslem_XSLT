@@ -2876,7 +2876,7 @@
                     </xsl:for-each>
                     <xsl:for-each select="cac:ShipmentStage/cac:DriverPerson">
                       <tr class="detay">
-                        <td class="etiket">Teslim Eden:</td>
+                        <td class="etiket">Şöför:</td>
                         <td class="veri"><xsl:call-template name="person"/></td>
                       </tr>
                     </xsl:for-each>
