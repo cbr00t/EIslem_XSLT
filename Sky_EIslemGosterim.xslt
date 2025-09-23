@@ -102,7 +102,7 @@
   <xsl:param name="_sipRefGosterimKurali" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SIPREF_GOSTERIM_KURALI']" />
   
   <xsl:variable name="dovizlimi"
-    select="not ($xroot/cbc:DocumentCurrencyCode = 'TRL' or $xroot/cbc:DocumentCurrencyCode = 'TRY')"/>
+    select="not($xroot/cbc:DocumentCurrencyCode = 'TRL' or $xroot/cbc:DocumentCurrencyCode = 'TRY')"/>
   <xsl:variable name="dvKod">
     <xsl:choose>
       <xsl:when test="$dovizlimi">
@@ -1422,7 +1422,11 @@
   </xsl:template>
   <xsl:template name="invoiceTable">
     <table class="invoiceTableDetail">
-      <thead><xsl:call-template name="invoiceTable-baslik"><xsl:with-param name="satir2mi" select="'false'"/></xsl:call-template></thead>
+      <thead>
+        <xsl:call-template name="invoiceTable-baslik">
+          <xsl:with-param name="satir2mi" select="false"/>
+        </xsl:call-template>
+      </thead>
       <xsl:choose>
         <xsl:when test="$eIrsaliyemi">
           <xsl:for-each select="$xroot/cac:DespatchLine">
@@ -1443,10 +1447,12 @@
     </table>
   </xsl:template>
   <xsl:template name="invoiceTable-baslik">
-    <xsl:param name="satir2mi" select="'false'"/>
-      <xsl:if test="$satir2mi != 'true'">
+    <xsl:param name="satir2mi" select="false"/>
+      <xsl:if test="not($satir2mi)">
         <tr class="baslik baslik1 satir1">
-          <xsl:if test="$kodYerineSiraNomu != 'true'"><td colspan="1" class="numeric rowNumber">Sıra No</td></xsl:if>
+          <xsl:if test="$kodYerineSiraNomu != 'true'">
+            <td colspan="1" class="numeric rowNumber">Sıra No</td>
+          </xsl:if>
           <xsl:if test="$satirdaBarkodmu = 'true'">
             <td class="text barkod">Barkod</td>
           </xsl:if>
@@ -1483,29 +1489,57 @@
               </xsl:if>
             </xsl:if>
           </xsl:if>
-          <xsl:if test="$xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'KATDETAY']">
+          <xsl:variable name="katDetay">
+            <xsl:call-template name="getKeyValue">
+              <xsl:with-param name="key" select="'KATDETAY'"/>
+              <xsl:with-param name="inside" select="false"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:if test="normalize-space($katDetay)">
             <td class="text katDetay">Kat. Detay</td>
           </xsl:if>
-          <xsl:if test="$xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'TAKIPNO']">
+          <xsl:variable name="takipNo">
+            <xsl:call-template name="getKeyValue">
+              <xsl:with-param name="key" select="'TAKIPNO'"/>
+              <xsl:with-param name="inside" select="false"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:variable name="takipNo_etiket">
+            <xsl:call-template name="getKeyValue">
+              <xsl:with-param name="key" select="'TAKIPNO_ETIKET'"/>
+              <xsl:with-param name="inside" select="false"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:if test="normalize-space($takipNo)">
             <td class="text takipNo">
-              <xsl:variable name="takipNoEtiket">
-                <xsl:value-of select="$xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'TAKIPNO_ETIKET']"/>
-              </xsl:variable>
               <xsl:choose>
-                <xsl:when test="$takipNoEtiket and normalize-space($takipNoEtiket) = ''">
+                <xsl:when test="$takipNo_etiket and normalize-space($takipNo_etiket) = ''">
                   <xsl:text>Takip No</xsl:text>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:value-of select="$takipNoEtiket"/>
+                  <xsl:value-of select="$takipNo_etiket"/>
                 </xsl:otherwise>
               </xsl:choose>
             </td>
+            <xsl:text> </xsl:text>
           </xsl:if>
-          <xsl:if test="$xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'KOLI_GORUNUM']">
+          <xsl:variable name="koliGorunum">
+            <xsl:call-template name="getKeyValue">
+              <xsl:with-param name="key" select="'KOLI_GORUNUM'"/>
+              <xsl:with-param name="inside" select="false"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:if test="normalize-space($koliGorunum)">
             <td class="text koli">KOLİ</td>
           </xsl:if>
           <td class="numeric miktar">Miktar</td>
-          <xsl:if test="$satirdaMiktar2mi = 'true' and $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'MIKTAR2GORUNUM']">
+          <xsl:variable name="miktar2Gorunum">
+            <xsl:call-template name="getKeyValue">
+              <xsl:with-param name="key" select="'MIKTAR2GORUNUM'"/>
+              <xsl:with-param name="inside" select="false"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:if test="$satirdaMiktar2mi = 'true' and normalize-space($miktar2Gorunum)">
             <td class="numeric miktar2">Miktar2</td>
           </xsl:if>
           <xsl:if test="$fiyatBedelGosterilirmi = 'true'">
@@ -1519,19 +1553,43 @@
                 </xsl:otherwise>
               </xsl:choose>
             </td>
-            <xsl:if test="$fiyatGosterimKurali = 'HP' and $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'NET_FIYAT']">
-              <td class="numeric netFiyat">Net Fiyat</td>
+            <xsl:variable name="netFiyat">
+              <xsl:call-template name="getKeyValue">
+                <xsl:with-param name="key" select="'NET_FIYAT'"/>
+                <xsl:with-param name="inside" select="false"/>
+              </xsl:call-template>
+            </xsl:variable>
+            <xsl:if test="$fiyatGosterimKurali = 'HP' and normalize-space($netFiyat)">
+              <td class="text netFiyat">
+                <xsl:text>Net Fiyat</xsl:text>
+              </td>
+              <xsl:text> </xsl:text>
             </xsl:if>
             <!--<xsl:if test="$dovizGosterimKurali = 'X' and $dvKur != ''">
               <td class="numeric dvFiyat">Birim Dv. Fiyat</td>
             </xsl:if>-->
-            <xsl:if test="
-                $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ISKORANLARGORUNUM'] or
-                $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ARTORANLARGORUNUM'] or
-                ($satirdaIskBedelmi = 'true' and $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ISKTOPBEDELGORUNUM'])">
+            <xsl:variable name="iskOranlarGorunum">
+              <xsl:call-template name="getKeyValue">
+                <xsl:with-param name="key" select="'ISKORANLARGORUNUM'"/>
+                <xsl:with-param name="inside" select="false"/>
+              </xsl:call-template>
+            </xsl:variable>
+            <xsl:variable name="artOranlarGorunum">
+              <xsl:call-template name="getKeyValue">
+                <xsl:with-param name="key" select="'ARTORANLARGORUNUM'"/>
+                <xsl:with-param name="inside" select="false"/>
+              </xsl:call-template>
+            </xsl:variable>
+            <xsl:variable name="iskTopBedelGorunum">
+              <xsl:call-template name="getKeyValue">
+                <xsl:with-param name="key" select="'ISKTOPBEDELGORUNUM'"/>
+                <xsl:with-param name="inside" select="false"/>
+              </xsl:call-template>
+            </xsl:variable>
+            <xsl:if test="normalize-space($iskOranlarGorunum) or normalize-space($artOranlarGorunum) or ($satirdaIskBedelmi = 'true' and normalize-space($iskTopBedelGorunum))">
               <td class="numeric iskonto">İskonto</td>
             </xsl:if>
-            <xsl:if test="$satirdaKdvmi = 'true' and (not ($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not ($eIhracatmi or $eMustahsilmi)">
+            <xsl:if test="$satirdaKdvmi = 'true' and (not($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not($eIhracatmi or $eMustahsilmi)">
               <td class="numeric kdvText">KDV</td>
             </xsl:if>
             <xsl:if test="$satirdaDigerVergilermi = 'true' and $xroot//cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme[cbc:TaxTypeCode != '0015']">
@@ -1541,7 +1599,7 @@
           </xsl:if>
         </tr>
       </xsl:if>
-      <xsl:if test="$eIhracatmi and $ciftSatirmi and $satir2mi = 'true'">
+      <xsl:if test="$eIhracatmi and $ciftSatirmi and $satir2mi">
         <tr class="baslik baslik2 satir2">
           <td class="separator" colspan="1"> </td>
           <xsl:if test="not($xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'KOLON_GIZLE' and cbc:DocumentTypeCode = 'TSR']) and $xroot//cac:Delivery/cac:DeliveryTerms/cbc:ID [@schemeID = 'INCOTERMS']">
@@ -1654,29 +1712,36 @@
             </xsl:if>
           </xsl:if>
         </xsl:if>
-        <xsl:if test="$xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'KATDETAY']">
-          <xsl:for-each select="cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'KATDETAY']">
-            <td class="text katDetay">
-              <xsl:value-of select="."/>
-            </td>
-          </xsl:for-each>
+        <xsl:variable name="katDetay">
+          <xsl:call-template name="getKeyValue">
+            <xsl:with-param name="key" select="'KATDETAY'"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:if test="normalize-space($katDetay)">
+          <td class="text katDetay">
+            <xsl:value-of select="$katDetay"/>
+          </td>
           <xsl:text> </xsl:text>
         </xsl:if>
-        <xsl:if test="$xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'TAKIPNO']">
-          <xsl:for-each select="cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'TAKIPNO']">
-            <td class="text takipNo">
-              <xsl:value-of select="."/>
-            </td>
-          </xsl:for-each>
+        <xsl:variable name="takipNo">
+          <xsl:call-template name="getKeyValue">
+            <xsl:with-param name="key" select="'TAKIPNO'"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:if test="normalize-space($takipNo)">
+          <td class="text takipNo">
+            <xsl:value-of select="$takipNo"/>
+          </td>
           <xsl:text> </xsl:text>
         </xsl:if>
-        <xsl:if test="$xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'KOLI_GORUNUM']">
-          <xsl:for-each select="cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'KOLI_GORUNUM']">
-            <td class="text koli">
-              <xsl:value-of select="."/>
-            </td>
-          </xsl:for-each>
-          <xsl:text> </xsl:text>
+        <xsl:variable name="koliGorunum">
+          <xsl:call-template name="getKeyValue">
+            <xsl:with-param name="key" select="'KOLI_GORUNUM'"/>
+            <xsl:with-param name="inside" select="false"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:if test="normalize-space($koliGorunum)">
+          <td class="text koliGorunum"> <xsl:value-of select="$koliGorunum"/></td>
         </xsl:if>
         <td class="numeric miktar">
           <xsl:choose>
@@ -1701,16 +1766,13 @@
           </xsl:choose>
           <xsl:text> </xsl:text>
         </td>
-        <xsl:if test="$satirdaMiktar2mi = 'true' and $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'MIKTAR2GORUNUM']">
-          <td class="numeric miktar2">
-            <xsl:for-each select="cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'MIKTAR2GORUNUM']">
-              <xsl:value-of select="."/>
-            </xsl:for-each>
-            <xsl:for-each select="cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'BRM2GORUNUM']">
-              <xsl:value-of select="."/>
-            </xsl:for-each>
-            <xsl:text> </xsl:text>
-          </td>
+        <xsl:variable name="miktar2Gorunum">
+          <xsl:call-template name="getKeyValue">
+            <xsl:with-param name="key" select="'MIKTAR2GORUNUM'"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:if test="$satirdaMiktar2mi = 'true' and $miktar2Gorunum">
+          <td class="numeric miktar2Gorunum"><xsl:value-of select="$miktar2Gorunum"/></td>
         </xsl:if>
         <xsl:if test="$fiyatBedelGosterilirmi = 'true'">
           <td class="numeric fiyat">
@@ -1723,12 +1785,15 @@
             </xsl:for-each>
             <xsl:text> </xsl:text>
           </td>
-          <xsl:if test="$fiyatGosterimKurali = 'HP' and $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'NET_FIYAT']">
-            <xsl:for-each select="cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'NET_FIYAT']">
-              <td class="numeric netFiyat">
-                <xsl:value-of select="format-number(., $fiyatFormatStr, $numLocale)"/>
-              </td>
-            </xsl:for-each>
+          <xsl:variable name="netFiyat">
+            <xsl:call-template name="getKeyValue">
+              <xsl:with-param name="key" select="'NET_FIYAT'"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:if test="$fiyatGosterimKurali = 'HP' and $netFiyat">
+            <td class="numeric netFiyat">
+              <xsl:value-of select="format-number($netFiyat, $fiyatFormatStr, $numLocale)"/>
+            </td>
             <xsl:text> </xsl:text>
           </xsl:if>
           <!--<xsl:if test="$dovizGosterimKurali = 'X' and $dvKur != ''">
@@ -1739,69 +1804,75 @@
             </td>
             <xsl:text> </xsl:text>
           </xsl:if>-->
-          <xsl:if test="
-                $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ISKORANLARGORUNUM'] or
-                $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ARTORANLARGORUNUM'] or
-                ($satirdaIskBedelmi = 'true' and $xroot//cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'ISKTOPBEDELGORUNUM'])">
+          <xsl:variable name="iskOranlarGorunum">
+            <xsl:call-template name="getKeyValue">
+              <xsl:with-param name="key" select="'ISKORANLARGORUNUM'"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:variable name="artOranlarGorunum">
+            <xsl:call-template name="getKeyValue">
+              <xsl:with-param name="key" select="'ARTORANLARGORUNUM'"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:variable name="iskTopBedelGorunum">
+            <xsl:call-template name="getKeyValue">
+              <xsl:with-param name="key" select="'ISKTOPBEDELGORUNUM'"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:if test="normalize-space($iskOranlarGorunum) or normalize-space($artOranlarGorunum) or ($satirdaIskBedelmi = 'true' and normalize-space($iskTopBedelGorunum))">
             <td class="numeric iskonto">
               <div class="oran">
-                <xsl:for-each select="cac:Item/cac:AdditionalItemIdentification/cbc:ID [normalize-space(.) != '']">
-                  <xsl:choose>
-                    <xsl:when test="@schemeID = 'ISKORANLARGORUNUM'">
-                      <span class="iskOran sub-item">
-                        <span class="veri">
-                          <xsl:value-of select="."/>
-                        </span>
-                      </span>
-                    </xsl:when>
-                    <xsl:when test="@schemeID = 'ARTORANLARGORUNUM'">
-                      <span class="artOran sub-item">
-                        <span class="etiket">
-                          <xsl:text>Art:</xsl:text>
-                        </span>
-                        <span class="veri">
-                          <xsl:value-of select="."/>
-                        </span>
-                      </span>
-                    </xsl:when>
-                    <xsl:otherwise></xsl:otherwise>
-                  </xsl:choose>
-                </xsl:for-each>
+                <xsl:if test="normalize-space($iskOranlarGorunum)">
+                  <span class="iskOran sub-item">
+                    <span class="veri"><xsl:value-of select="$iskOranlarGorunum"/></span>
+                  </span>
+                </xsl:if>
+                <xsl:if test="normalize-space($artOranlarGorunum)">
+                  <span class="artOran sub-item">
+                    <span class="veri"><xsl:value-of select="$artOranlarGorunum"/></span>
+                  </span>
+                </xsl:if>
               </div>
-              <xsl:if test="$satirdaIskBedelmi = 'true'">
+              <xsl:if test="$satirdaIskBedelmi = 'true' and normalize-space($iskTopBedelGorunum)">
                 <div class="bedel item">
-                  <xsl:for-each select="cac:Item/cac:AdditionalItemIdentification/cbc:ID [normalize-space(.) != '']">
-                    <xsl:if test="@schemeID = 'ISKTOPBEDELGORUNUM'">
-                      <span class="iskBedel sub-item">
-                        <span class="veri">
-                          <xsl:value-of select="."/>
-                          <xsl:call-template name="currency"/>
-                        </span>
-                      </span>
-                    </xsl:if>
-                  </xsl:for-each>
+                  <span class="iskBedel sub-item">
+                    <span class="veri">
+                      <xsl:value-of select="iskTopBedelGorunum"/>
+                      <xsl:call-template name="currency"/>
+                    </span>
+                  </span>
                 </div>
               </xsl:if>
               <xsl:text> </xsl:text>
             </td>
           </xsl:if>
-          <xsl:if test="$satirdaKdvmi = 'true' and (not ($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not ($eIhracatmi or $eMustahsilmi)">
+          <xsl:if test="$satirdaKdvmi = 'true' and (not($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not($eIhracatmi or $eMustahsilmi)">
             <td class="numeric kdvText">
+              <xsl:variable name="satir_kdv_oran">
+                <xsl:call-template name="getKeyValue">
+                  <xsl:with-param name="key" select="'SATIR_KDV_ORAN'"/>
+                </xsl:call-template>
+              </xsl:variable>
+              <xsl:variable name="satir_kdv_bedel">
+                <xsl:call-template name="getKeyValue">
+                  <xsl:with-param name="key" select="'SATIR_KDV_BEDEL'"/>
+                </xsl:call-template>
+              </xsl:variable>
               <xsl:choose>
-                <xsl:when test="cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'SATIR_KDV_ORAN'] or cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'SATIR_KDV_BEDEL']">
-                    <div class="asil item">
-                      <xsl:for-each select="cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'SATIR_KDV_ORAN']">
-                        <span class="ek-bilgi"><xsl:text>(</xsl:text></span>
-                        <span class="kdvOrani">
-                          <xsl:text>%</xsl:text>
-                          <xsl:value-of select="format-number(., '##0,####', $numLocale)"/>
-                        </span>
-                        <span class="ek-bilgi"><xsl:text>) </xsl:text></span>
-                      </xsl:for-each>
-                      <xsl:for-each select="cac:Item/cac:AdditionalItemIdentification/cbc:ID[@schemeID = 'SATIR_KDV_BEDEL']">
-                        <span class="kdv"><xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/></span>
-                      </xsl:for-each>
-                    </div>
+                <xsl:when test="$satir_kdv_oran or $satir_kdv_bedel">
+                  <div class="asil item">
+                    <xsl:if test="$satir_kdv_oran">
+                      <span class="ek-bilgi"><xsl:text>(</xsl:text></span>
+                      <span class="kdvOrani">
+                        <xsl:text>%</xsl:text>
+                        <xsl:value-of select="format-number($satir_kdv_oran, '##0,####', $numLocale)"/>
+                      </span>
+                      <span class="ek-bilgi"><xsl:text>) </xsl:text></span>
+                    </xsl:if>
+                    <xsl:if test="$satir_kdv_bedel">
+                      <span class="kdv"><xsl:value-of select="format-number($satir_kdv_bedel, $bedelFormatStr, $numLocale)"/></span>
+                    </xsl:if>
+                  </div>
                 </xsl:when>
                 <xsl:otherwise>
                   <xsl:for-each select="cac:TaxTotal/cac:TaxSubtotal [cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode = '0015']">
@@ -1864,7 +1935,11 @@
       </tr>
     <xsl:if test="$eIhracatmi and $ciftSatirmi">
       <tr class="detay detay2 satir2 full-width"><td colspan="1000"><table class="sub-table full-width">
-      <thead><xsl:call-template name="invoiceTable-baslik"><xsl:with-param name="satir2mi" select="'true'"/></xsl:call-template></thead>
+        <thead>
+          <xsl:call-template name="invoiceTable-baslik">
+            <xsl:with-param name="satir2mi" select="true"/>
+          </xsl:call-template>
+        </thead>
       <tbody><tr class="detay detay2 satir2">
         <td class="separator" colspan="1"> </td>
         <xsl:if test="not($xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'KOLON_GIZLE' and cbc:DocumentTypeCode = 'TSR']) and $xroot//cac:Delivery/cac:DeliveryTerms/cbc:ID [@schemeID = 'INCOTERMS']">
@@ -1893,18 +1968,18 @@
           <td class="text teslim-bedelOdemeYeri">
             <xsl:for-each select="cac:Delivery/cac:DeliveryAddress">
               <xsl:for-each select="cbc:CitySubdivisionName">
-                <xsl:if test="not (normalize-space(.) = '' or normalize-space(.) = '.')">
+                <xsl:if test="not(normalize-space(.) = '' or normalize-space(.) = '.')">
                   <xsl:value-of select="." />
                   <xsl:text> / </xsl:text>
                 </xsl:if>
               </xsl:for-each>
               <xsl:for-each select="cbc:CityName">
-                <xsl:if test="not (normalize-space(.) = '' or normalize-space(.) = '.')">
+                <xsl:if test="not(normalize-space(.) = '' or normalize-space(.) = '.')">
                   <xsl:value-of select="." />
                 </xsl:if>
               </xsl:for-each>
               <xsl:for-each select="cbc:CountryName">
-                <xsl:if test="not (normalize-space(.) = '' or normalize-space(.) = '.')">
+                <xsl:if test="not(normalize-space(.) = '' or normalize-space(.) = '.')">
                   <xsl:text> / </xsl:text>
                   <xsl:value-of select="." />
                 </xsl:if>
@@ -2322,8 +2397,8 @@
   </xsl:template>
   <xsl:template name="party">
     <xsl:param name="isSender"/>
-    <xsl:variable name="unvanBilgiVarmi" select="not(not(cac:Party/cac:PartyName/cbc:Name [not (. = '' or . = '.')]))"/>
-    <xsl:variable name="sahisBilgiVarmi" select="not(not(cac:Party/cac:Person/cbc:FirstName [not (. = '' or . = '.')]))"/>
+    <xsl:variable name="unvanBilgiVarmi" select="not(not(cac:Party/cac:PartyName/cbc:Name [not(. = '' or . = '.')]))"/>
+    <xsl:variable name="sahisBilgiVarmi" select="not(not(cac:Party/cac:Person/cbc:FirstName [not(. = '' or . = '.')]))"/>
     <xsl:variable name="sahisVeyaUnvanBilgiVarmi" select="$unvanBilgiVarmi or $sahisBilgiVarmi"/>
     <xsl:for-each select="cac:Party">
       <div class="item">
@@ -2876,7 +2951,7 @@
                     </xsl:for-each>
                     <xsl:for-each select="cac:ShipmentStage/cac:DriverPerson">
                       <tr class="detay">
-                        <td class="etiket">Şöför:</td>
+                        <td class="etiket">Teslim Eden:</td>
                         <td class="veri"><xsl:call-template name="person"/></td>
                       </tr>
                     </xsl:for-each>
@@ -3023,5 +3098,42 @@
         </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  <xsl:template name="getKeyValue">
+    <xsl:param name="key"/>
+    <xsl:param name="inside" select="true"/>
+    <xsl:choose>
+      <xsl:when test="$inside">
+        <xsl:call-template name="getKeyValueInternal"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:choose>
+          <xsl:when test="$eIrsaliyemi">
+            <xsl:for-each select="$xroot/cac:DespatchLine">
+              <xsl:call-template name="getKeyValueInternal"/>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:when test="$eMustahsilmi">
+            <xsl:for-each select="$xroot/cac:CreditNoteLine">
+              <xsl:call-template name="getKeyValueInternal"/>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:for-each select="$xroot/cac:InvoiceLine">
+              <xsl:call-template name="getKeyValueInternal"/>
+            </xsl:for-each>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template name="getKeyValueInternal">
+    <xsl:param name="key"/>
+    <xsl:variable name="prefix" select="concat('!#', $key, '=')"/>
+    <xsl:for-each select="cbc:Note">
+      <xsl:if test="starts-with(., $prefix)">
+        <xsl:value-of select="substring-after(., $prefix)"/>
+      </xsl:if>
+    </xsl:for-each>
   </xsl:template>
 </xsl:stylesheet>
