@@ -2951,7 +2951,7 @@
                     </xsl:for-each>
                     <xsl:for-each select="cac:ShipmentStage/cac:DriverPerson">
                       <tr class="detay">
-                        <td class="etiket">Teslim Eden:</td>
+                        <td class="etiket">Taşıyıcı:</td>
                         <td class="veri"><xsl:call-template name="person"/></td>
                       </tr>
                     </xsl:for-each>
@@ -3129,10 +3129,15 @@
   </xsl:template>
   <xsl:template name="getKeyValueInternal">
     <xsl:param name="key"/>
-    <xsl:variable name="prefix" select="concat('!#', $key, '=')"/>
+    <!-- concat yerine gövde + value-of -->
+    <xsl:variable name="prefix">
+      !#<xsl:value-of select="$key"/>=
+    </xsl:variable>
     <xsl:for-each select="cbc:Note">
-      <xsl:if test="starts-with(., $prefix)">
-        <xsl:value-of select="substring-after(., $prefix)"/>
+      <xsl:variable name="plen" select="string-length($prefix)"/>
+      <!-- starts-with yerine substring karşılaştırması -->
+      <xsl:if test="substring(., 1, $plen) = $prefix">
+        <xsl:value-of select="substring(., $plen + 1)"/>
       </xsl:if>
     </xsl:for-each>
   </xsl:template>
