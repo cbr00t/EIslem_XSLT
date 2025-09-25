@@ -1710,7 +1710,19 @@
           <xsl:if test="normalize-space($iskOranlarGorunum) or normalize-space($artOranlarGorunum) or ($satirdaIskBedelmi = 'true' and normalize-space($iskTopBedelGorunum))">
             <td class="numeric iskonto">İskonto</td>
           </xsl:if>
-          <xsl:if test="$satirdaKdvmi = 'true' and (not($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not($eIhracatmi or $eMustahsilmi)">
+          <xsl:variable name="satirKdvOran">
+            <xsl:call-template name="getKeyValue">
+              <xsl:with-param name="key" select="'SATIR_KDV_ORAN'"/>
+              <xsl:with-param name="inside" select="false()"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:variable name="satirKdvBedel">
+            <xsl:call-template name="getKeyValue">
+              <xsl:with-param name="key" select="'SATIR_KDV_BEDEL'"/>
+              <xsl:with-param name="inside" select="false()"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:if test="$satirdaKdvmi = 'true' and (not($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not($eIhracatmi or $eMustahsilmi) and (normalize-space($satirKdvOran) or normalize-space($satirKdvBedel))">
             <td class="numeric kdvText">KDV</td>
           </xsl:if>
           <xsl:if test="$satirdaDigerVergilermi = 'true' and $xroot//cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme[cbc:TaxTypeCode != '0015']">
@@ -1864,7 +1876,6 @@
       <xsl:variable name="koliGorunum">
         <xsl:call-template name="getKeyValue">
           <xsl:with-param name="key" select="'KOLI_GORUNUM'"/>
-          <xsl:with-param name="inside" select="false()"/>
         </xsl:call-template>
       </xsl:variable>
       <xsl:if test="normalize-space($koliGorunum)">
@@ -1981,36 +1992,36 @@
             <xsl:text> </xsl:text>
           </td>
         </xsl:if>
-        <xsl:if test="$satirdaKdvmi = 'true' and (not($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not($eIhracatmi or $eMustahsilmi)">
+        <xsl:variable name="satirKdvOran">
+          <xsl:call-template name="getKeyValue">
+            <xsl:with-param name="key" select="'SATIR_KDV_ORAN'"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:variable name="satirKdvBedel">
+          <xsl:call-template name="getKeyValue">
+            <xsl:with-param name="key" select="'SATIR_KDV_BEDEL'"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:if test="$satirdaKdvmi = 'true' and (not($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not($eIhracatmi or $eMustahsilmi) and (normalize-space($satirKdvOran) or normalize-space($satirKdvBedel))">
           <td class="numeric kdvText">
-            <xsl:variable name="satir_kdv_oran">
-              <xsl:call-template name="getKeyValue">
-                <xsl:with-param name="key" select="'SATIR_KDV_ORAN'"/>
-              </xsl:call-template>
-            </xsl:variable>
-            <xsl:variable name="satir_kdv_bedel">
-              <xsl:call-template name="getKeyValue">
-                <xsl:with-param name="key" select="'SATIR_KDV_BEDEL'"/>
-              </xsl:call-template>
-            </xsl:variable>
             <xsl:choose>
-              <xsl:when test="$satir_kdv_oran or $satir_kdv_bedel">
+              <xsl:when test="normalize-space($satirKdvOran) or normalize-space($satirKdvBedel)">
                 <div class="asil item">
-                  <xsl:if test="$satir_kdv_oran">
+                  <xsl:if test="normalize-space($satirKdvOran)">
                     <span class="ek-bilgi">
                       <xsl:text>(</xsl:text>
                     </span>
                     <span class="kdvOrani">
                       <xsl:text>%</xsl:text>
-                      <xsl:value-of select="format-number(number($satir_kdv_oran), '##0,####', $numLocale)"/>
+                      <xsl:value-of select="format-number(number($satirKdvOran), '##0,####', $numLocale)"/>
                     </span>
                     <span class="ek-bilgi">
                       <xsl:text>) </xsl:text>
                     </span>
                   </xsl:if>
-                  <xsl:if test="$satir_kdv_bedel">
+                  <xsl:if test="normalize-space($satirKdvBedel)">
                     <span class="kdv">
-                      <xsl:value-of select="format-number(number($satir_kdv_bedel), $bedelFormatStr, $numLocale)"/>
+                      <xsl:value-of select="format-number(number($satirKdvBedel), $bedelFormatStr, $numLocale)"/>
                     </span>
                   </xsl:if>
                 </div>
@@ -3463,24 +3474,32 @@
     <xsl:param name="key"/>
     <xsl:param name="inside" select="true()"/>
     <xsl:choose>
-      <xsl:when test="$inside">
-        <xsl:call-template name="getKeyValueInternal"/>
+      <xsl:when test="$inside">   
+        <xsl:call-template name="getKeyValueInternal">
+          <xsl:with-param name="key" select="$key"/>
+        </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
         <xsl:choose>
           <xsl:when test="$eIrsaliyemi">
             <xsl:for-each select="$xroot/cac:DespatchLine">
-              <xsl:call-template name="getKeyValueInternal"/>
+              <xsl:call-template name="getKeyValueInternal">
+                <xsl:with-param name="key" select="$key"/>
+              </xsl:call-template>
             </xsl:for-each>
           </xsl:when>
           <xsl:when test="$eMustahsilmi">
             <xsl:for-each select="$xroot/cac:CreditNoteLine">
-              <xsl:call-template name="getKeyValueInternal"/>
+              <xsl:call-template name="getKeyValueInternal">
+                <xsl:with-param name="key" select="$key"/>
+              </xsl:call-template>
             </xsl:for-each>
           </xsl:when>
           <xsl:otherwise>
             <xsl:for-each select="$xroot/cac:InvoiceLine">
-              <xsl:call-template name="getKeyValueInternal"/>
+              <xsl:call-template name="getKeyValueInternal">
+                <xsl:with-param name="key" select="$key"/>
+              </xsl:call-template>
             </xsl:for-each>
           </xsl:otherwise>
         </xsl:choose>
