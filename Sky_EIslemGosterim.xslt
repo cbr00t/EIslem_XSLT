@@ -602,11 +602,11 @@
           .paper .invoiceTableDetail tr td.barkod,
           .paper .invoiceTableDetail tr td.shKod { width: 100px; overflow-wrap: anywhere !important }
           .paper .invoiceTableDetail tr td.shAdi { min-width: 150px; max-width: unset; width: -webkit-fill-available }
-          .paper .invoiceTableDetail tr td.miktar { min-width: 60px; max-width: 90px }
+          .paper .invoiceTableDetail tr td.miktar { min-width: 60px; max-width: 100px }
           .paper .invoiceTableDetail tr td.fiyat,
           .paper .invoiceTableDetail tr td.netFiyat,
-          .paper .invoiceTableDetail tr td.dvFiyat { min-width: 60px; max-width: 90px }
-          .paper .invoiceTableDetail tr td.iskonto { text-align: center !important; width: 60px; max-width: 80px }
+          .paper .invoiceTableDetail tr td.dvFiyat { min-width: 60px; max-width: 100px }
+          .paper .invoiceTableDetail tr td.iskonto { text-align: center !important; width: 80px; max-width: 100px }
           .paper .invoiceTableDetail tr td.iskonto > .item .sub-item:not(:first-child) { margin-left: 5px }
           .paper .invoiceTableDetail tr td.kdvText { width: 80px; <xsl:if test="$tevkifatlimi">width: 150px</xsl:if> }
           .paper .invoiceTableDetail tr td.kdvText.tevkifatli { width: 130px }
@@ -1722,7 +1722,7 @@
               <xsl:with-param name="inside" select="false()"/>
             </xsl:call-template>
           </xsl:variable>
-          <xsl:if test="$satirdaKdvmi = 'true' and (not($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not($eIhracatmi or $eMustahsilmi) and (normalize-space($satirKdvOran) or normalize-space($satirKdvBedel))">
+          <xsl:if test="$satirdaKdvmi = 'true' and (not($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true')">
             <td class="numeric kdvText">KDV</td>
           </xsl:if>
           <xsl:if test="$satirdaDigerVergilermi = 'true' and $xroot//cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme[cbc:TaxTypeCode != '0015']">
@@ -1983,7 +1983,7 @@
               <div class="bedel item">
                 <span class="iskBedel sub-item">
                   <span class="veri">
-                    <xsl:value-of select="iskTopBedelGorunum"/>
+                    <xsl:value-of select="$iskTopBedelGorunum"/>
                     <xsl:call-template name="currency"/>
                   </span>
                 </span>
@@ -2002,7 +2002,7 @@
             <xsl:with-param name="key" select="'SATIR_KDV_BEDEL'"/>
           </xsl:call-template>
         </xsl:variable>
-        <xsl:if test="$satirdaKdvmi = 'true' and (not($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not($eIhracatmi or $eMustahsilmi) and (normalize-space($satirKdvOran) or normalize-space($satirKdvBedel))">
+        <xsl:if test="$satirdaKdvmi = 'true' and (not($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not($eIhracatmi or $eMustahsilmi)">
           <td class="numeric kdvText">
             <xsl:choose>
               <xsl:when test="normalize-space($satirKdvOran) or normalize-space($satirKdvBedel)">
@@ -3518,8 +3518,45 @@
       <xsl:variable name="plen" select="string-length($prefix)"/>
       <!-- starts-with yerine substring karşılaştırması -->
       <xsl:if test="substring(., 1, $plen) = $prefix">
-        <xsl:value-of select="substring(., $plen + 1)"/>
+        <!--<xsl:value-of select="substring(., $plen + 1)" disable-output-escaping="no"/>-->
+        <xsl:variable name="raw" select="substring(., $plen + 1)"/>
+        <xsl:call-template name="decodeEntities">
+          <xsl:with-param name="text" select="$raw"/>
+        </xsl:call-template>
       </xsl:if>
     </xsl:for-each>
   </xsl:template>
+  <xsl:template name="decodeEntities">
+  <xsl:param name="text"/>
+  <xsl:choose>
+    <!-- numeric entity varsa -->
+    <xsl:when test="contains($text, '&amp;#')">
+      <xsl:variable name="before" select="substring-before($text, '&amp;#')"/>
+      <xsl:variable name="after"  select="substring-after($text, '&amp;#')"/>
+      <xsl:variable name="num" select="substring-before($after, ';')"/>
+      <xsl:variable name="rest" select="substring-after($after, ';')"/>
+      <!-- önceki kısım -->
+      <xsl:value-of select="$before"/>
+      <!-- numeric mapping -->
+      <xsl:choose>
+        <xsl:when test="$num='37'">%</xsl:when>
+        <xsl:when test="$num='43'">+</xsl:when>
+        <xsl:when test="$num='40'">(</xsl:when>
+        <xsl:when test="$num='41'">)</xsl:when>
+        <!-- başka gerekiyorsa buraya ekle -->
+        <xsl:otherwise>
+          <xsl:text>?</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+      <!-- kalan kısmı recursive işle -->
+      <xsl:call-template name="decodeEntities">
+        <xsl:with-param name="text" select="$rest"/>
+      </xsl:call-template>
+    </xsl:when>
+    <!-- başka entity yoksa -->
+    <xsl:otherwise>
+      <xsl:value-of select="$text"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 </xsl:stylesheet>
