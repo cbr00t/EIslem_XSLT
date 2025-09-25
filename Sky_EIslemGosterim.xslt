@@ -1946,6 +1946,24 @@
             </td>
             <xsl:text> </xsl:text>
           </xsl:if>-->
+        <xsl:variable name="any_iskOranlarGorunum">
+          <xsl:call-template name="getKeyValue">
+            <xsl:with-param name="key" select="'ISKORANLARGORUNUM'"/>
+            <xsl:with-param name="inside" select="false()"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:variable name="any_artOranlarGorunum">
+          <xsl:call-template name="getKeyValue">
+            <xsl:with-param name="key" select="'ARTORANLARGORUNUM'"/>
+            <xsl:with-param name="inside" select="false()"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:variable name="any_iskTopBedelGorunum">
+          <xsl:call-template name="getKeyValue">
+            <xsl:with-param name="key" select="'ISKTOPBEDELGORUNUM'"/>
+            <xsl:with-param name="inside" select="false()"/>
+          </xsl:call-template>
+        </xsl:variable>
         <xsl:variable name="iskOranlarGorunum">
           <xsl:call-template name="getKeyValue">
             <xsl:with-param name="key" select="'ISKORANLARGORUNUM'"/>
@@ -1961,7 +1979,7 @@
             <xsl:with-param name="key" select="'ISKTOPBEDELGORUNUM'"/>
           </xsl:call-template>
         </xsl:variable>
-        <xsl:if test="normalize-space($iskOranlarGorunum) or normalize-space($artOranlarGorunum) or ($satirdaIskBedelmi = 'true' and normalize-space($iskTopBedelGorunum))">
+        <xsl:if test="normalize-space($any_iskOranlarGorunum) or normalize-space($any_artOranlarGorunum) or ($satirdaIskBedelmi = 'true' and normalize-space($any_iskTopBedelGorunum))">
           <td class="numeric iskonto">
             <div class="oran">
               <xsl:if test="normalize-space($iskOranlarGorunum)">
@@ -1989,7 +2007,7 @@
                 </span>
               </div>
             </xsl:if>
-            <xsl:text> </xsl:text>
+            <xsl:text></xsl:text>
           </td>
         </xsl:if>
         <xsl:variable name="satirKdvOran">
