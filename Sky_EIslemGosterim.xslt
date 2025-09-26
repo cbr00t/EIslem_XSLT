@@ -88,6 +88,7 @@
   <xsl:param name="_aliciMustKod" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'MUSTERI_KOD']"/>
   <xsl:param name="_satirGosterimKurali" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SATIR_GOSTERIM']" />
   <xsl:param name="_fiyatBedelGosterilirmi" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'FIYATBEDEL_GOSTERILIR']"/>
+  <xsl:param name="_satirdaStokKodmu" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SATIRDA_STOKKOD']"/>
   <xsl:param name="_satirdaBarkodmu" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SATIRDA_BARKOD']"/>
   <xsl:param name="_satirdaMiktar2mi" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SATIRDA_MIKTAR2']"/>
   <xsl:param name="_satirdaIskBedelmi" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SATIRDA_ISKONTO_BEDELI']"/>
@@ -388,6 +389,16 @@
           <xsl:when test="$eIrsaliyemi">false</xsl:when>
           <xsl:otherwise>true</xsl:otherwise>
         </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="satirdaStokKodmu">
+    <xsl:choose>
+      <xsl:when test="$_satirdaStokKodmu">
+        <xsl:value-of select="$_satirdaStokKodmu"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>true</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -1574,17 +1585,19 @@
         <xsl:if test="$kodYerineSiraNomu != 'true'">
           <td colspan="1" class="numeric rowNumber">Sıra No</td>
         </xsl:if>
-        <xsl:if test="$satirdaBarkodmu = 'true'">
+        <xsl:if test="$satirdaBarkodmu = 'true' and not($eIhracatmi)">
           <td class="text barkod">Barkod</td>
         </xsl:if>
-        <td class="text shKod">Kod</td>
+        <xsl:if test="$satirdaStokKodmu = 'true' and not($eIhracatmi)">
+          <td class="text shKod">Kod</td>
+        </xsl:if>
         <td class="text shAdi">Mal-Hiz. Adı</td>
         <xsl:if test="$eIhracatmi">
           <xsl:if test="not($xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'KOLON_GIZLE' and cbc:DocumentTypeCode = 'AUK']) and $xroot//cac:Item/cac:BuyersItemIdentification/cbc:ID">
             <td class="text aliciUrunKodu">Alıcı Ürün Kodu</td>
           </xsl:if>
           <xsl:if test="not($xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'KOLON_GIZLE' and cbc:DocumentTypeCode = 'SUK']) and $xroot//cac:Item/cac:SellersItemIdentification/cbc:ID">
-            <td class="text saticiUrunKodu">Satıcı Ürün Kodu</td>
+            <td class="text saticiUrunKodu">Satır Kodu</td>
           </xsl:if>
           <xsl:if test="not($ciftSatirmi)">
             <xsl:if test="not($xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'KOLON_GIZLE' and cbc:DocumentTypeCode = 'GTP']) and $xroot//cac:Delivery/cac:Shipment/cac:GoodsItem/cbc:RequiredCustomsID">
@@ -1722,7 +1735,7 @@
               <xsl:with-param name="inside" select="false()"/>
             </xsl:call-template>
           </xsl:variable>
-          <xsl:if test="$satirdaKdvmi = 'true' and (not($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true')">
+          <xsl:if test="$satirdaKdvmi = 'true' and (not($eIrsaliyemi) or $fiyatBedelGosterilirmi = 'true') and not($eIhracatmi or $eMustahsilmi)">
             <td class="numeric kdvText">KDV</td>
           </xsl:if>
           <xsl:if test="$satirdaDigerVergilermi = 'true' and $xroot//cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme[cbc:TaxTypeCode != '0015']">
@@ -1780,15 +1793,20 @@
           <xsl:text> </xsl:text>
         </td>
       </xsl:if>
-      <xsl:if test="$satirdaBarkodmu = 'true'">
+      <xsl:if test="$satirdaBarkodmu = 'true' and not($eIhracatmi)">
         <td class="text align-left barkod">
-          <xsl:value-of select="cac:Item/cac:ManufacturersItemIdentification/cbc:ID"/>
+          <xsl:if test="not (normalize-space(cac:Item/cac:ManufacturersItemIdentification/cbc:ID) = normalize-space(cac:Item/cac:SellersItemIdentification/cbc:ID))">
+            <xsl:value-of select="cac:Item/cac:ManufacturersItemIdentification/cbc:ID"/>
+            <xsl:text> </xsl:text>
+          </xsl:if>
         </td>
       </xsl:if>
-      <td class="text align-left shKod">
-        <xsl:value-of select="cac:Item/cac:SellersItemIdentification/cbc:ID"/>
-        <xsl:text> </xsl:text>
-      </td>
+      <xsl:if test="$satirdaStokKodmu = 'true' and not($eIhracatmi)">
+        <td class="text align-left shKod">
+          <xsl:value-of select="cac:Item/cac:SellersItemIdentification/cbc:ID"/>
+          <xsl:text> </xsl:text>
+        </td>
+      </xsl:if>
       <td class="text align-left shAdi">
         <xsl:value-of select="cac:Item/cbc:Name"/>
         <xsl:text> </xsl:text>
