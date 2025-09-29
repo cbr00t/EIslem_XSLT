@@ -103,7 +103,7 @@
   <xsl:param name="_sipRefGosterimKurali" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SIPREF_GOSTERIM_KURALI']" />
 
   <xsl:variable name="dovizlimi"
-    select="not($xroot/cbc:DocumentCurrencyCode = 'TRL' or $xroot/cbc:DocumentCurrencyCode = 'TRY')"/>
+        select="normalize-space($xroot/cac:PricingExchangeRate/cbc:CalculationRate) and not($xroot/cbc:DocumentCurrencyCode = 'TRL' or $xroot/cbc:DocumentCurrencyCode = 'TRY')"/>
   <xsl:variable name="dvKod">
     <xsl:choose>
       <xsl:when test="$dovizlimi">
