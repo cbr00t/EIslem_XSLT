@@ -1679,13 +1679,12 @@
         <xsl:if test="$fiyatBedelGosterilirmi = 'true'">
           <xsl:if test="not ($dovizlimi) or $dovizGosterimKurali != ''">
             <td class="numeric fiyat">
+              <xsl:if test="$dovizlimi">
+                <xsl:text>Dv.</xsl:text>
+              </xsl:if>
               <xsl:choose>
-                <xsl:when test="$fiyatGosterimKurali = 'NT'">
-                  <xsl:text>Net Fiyat</xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:text>Brm Fiyat</xsl:text>
-                </xsl:otherwise>
+                <xsl:when test="$fiyatGosterimKurali = 'NT'"><xsl:text>Net Fiyat</xsl:text></xsl:when>
+                <xsl:otherwise><xsl:text>Brm Fiyat</xsl:text></xsl:otherwise>
               </xsl:choose>
             </td>
           </xsl:if>
@@ -1746,7 +1745,12 @@
             <td class="numeric digerVergiler">Diğer Vergiler</td>
           </xsl:if>
           <xsl:if test="$fiyatBedelGosterilirmi = 'true' and not ($dovizlimi) or $dovizGosterimKurali != ''">
-            <td class="numeric bedel">Bedel</td>
+            <td class="numeric bedel">
+              <xsl:if test="$dovizlimi">
+                <xsl:text>Dv.</xsl:text>
+              </xsl:if>
+              <xsl:text>Bedel</xsl:text>
+            </td>
           </xsl:if>
           <xsl:if test="$fiyatBedelGosterilirmi = 'true' and $dovizlimi and $dovizGosterimKurali != 'D'">
             <td class="numeric tlBedel">TL Bedel</td>
