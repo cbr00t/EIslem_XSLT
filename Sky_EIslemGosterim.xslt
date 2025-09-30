@@ -1816,7 +1816,14 @@
       </xsl:if>
       <xsl:if test="$satirdaStokKodmu = 'true' and not($eIhracatmi)">
         <td class="text align-left shKod">
-          <xsl:value-of select="cac:Item/cac:SellersItemIdentification/cbc:ID"/>
+          <xsl:choose>
+            <xsl:when test="normalize-space(cac:Item/cac:SellersItemIdentification/cbc:ID)">
+              <xsl:value-of select="cac:Item/cac:SellersItemIdentification/cbc:ID"/>
+            </xsl:when>
+            <xsl:when test="normalize-space(cac:Item/cac:BuyersItemIdentification/cbc:ID)">
+              <xsl:value-of select="cac:Item/cac:BuyersItemIdentification/cbc:ID"/>
+            </xsl:when>
+          </xsl:choose>
           <xsl:text> </xsl:text>
         </td>
       </xsl:if>
