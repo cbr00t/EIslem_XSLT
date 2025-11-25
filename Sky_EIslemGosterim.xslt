@@ -3152,7 +3152,7 @@
     </xsl:for-each>
   </xsl:template>
   <xsl:template name="vergiNotlar">
-    <xsl:for-each select="$xroot/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory [cbc:TaxExemptionReason and cac:TaxScheme/cbc:TaxTypeCode = '0015']">
+    <!--<xsl:for-each select="$xroot/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory [cbc:TaxExemptionReason and cac:TaxScheme/cbc:TaxTypeCode = '0015']">
       <div class="note note-ek vergi">
         <span class="etiket">*Vergi İstisna Muafiyet:</span>
         <span class="veri">
@@ -3161,7 +3161,7 @@
           <xsl:value-of select="cbc:TaxExemptionReason"/>
         </span>
       </div>
-    </xsl:for-each>
+    </xsl:for-each>-->
     <xsl:for-each select="$xroot/cac:WithholdingTaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme">
       <div class="note note-ek vergi">
         <span class="etiket">*Tevkifat:</span>
