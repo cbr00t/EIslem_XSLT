@@ -635,7 +635,10 @@
           .paper .invoiceTableDetail tr td.kdvText > .asil.item > .kdvOrani { }
           .paper .invoiceTableDetail tr td.kdvText > .tevkifat.item { font-size: 80% }
           .paper .invoiceTableDetail tr td.kdvText > .tevkifat.item > .etiket { font-weight: bold }
-          .paper .invoiceTableDetail tr td.kdvText > .ek-bilgi { color: <xsl:value-of select="$yazi-renk-light"/> }
+          .paper .invoiceTableDetail tr td.kdvText .ek-bilgi { color: <xsl:value-of select="$yazi-renk-light"/> }
+          .paper .invoiceTableDetail tr td.kdvText .kod { font-weight: bold }
+          .paper .invoiceTableDetail tr td.kdvText .neden { font-size: 90%; margin-top: 3px } 
+          .paper .invoiceTableDetail tr td.kdvText .neden > .veri { color: orangered }
           .paper .invoiceTableDetail tr td.digerVergiler { }
           .paper .invoiceTableDetail tr td.bedel { min-width: 120px; max-width: unset; width: <xsl:value-of select="$bedel-kolon-width"/>px }
           .paper .invoiceTableDetail tr.aciklamaSatiri td { font-size: <xsl:value-of select="$genelPunto - 0.5"/>pt; color: #999; padding: 5px 13px; text-align: left; border-radius: 10px; }
@@ -2118,6 +2121,22 @@
                       </xsl:for-each>
                     </span>
                   </div>
+                  <xsl:for-each select="cac:TaxCategory">
+                    <xsl:if test="cbc:TaxExemptionReasonCode">
+                      <div class="neden item">
+                        <span class="kod ek-bilgi">
+                          <xsl:text>İst.: </xsl:text>
+                          <!--<xsl:text>(</xsl:text>
+                          <xsl:value-of select="cbc:TaxExemptionReasonCode"/>
+                          <xsl:text>) </xsl:text>-->
+                        </span>
+                        <span class="veri">
+                          <xsl:value-of select="cbc:TaxExemptionReasonCode"/>
+                          <!--<xsl:value-of select="cbc:TaxExemptionReason"/>-->
+                        </span>
+                      </div>
+                    </xsl:if>
+                  </xsl:for-each>
                 </xsl:for-each>
               </xsl:otherwise>
             </xsl:choose>
@@ -2161,6 +2180,8 @@
                   <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
                 </xsl:for-each>
               </span>
+              <!--<br/>
+              muafiyet nedeni-->
             </xsl:for-each>
             <xsl:text> </xsl:text>
           </td>
