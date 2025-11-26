@@ -101,6 +101,7 @@
   <xsl:param name="cokluKDVmi" select="count($xroot/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode [. = '0015']) &gt; 1"/>
   <xsl:param name="tevkifatlimi" select="count($xroot//cac:WithholdingTaxTotal/cac:TaxSubtotal [cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode &gt;= 600 and cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode &lt;= 700]) != 0" />
   <xsl:param name="_sipRefGosterimKurali" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SIPREF_GOSTERIM_KURALI']" />
+  <xsl:param name="_kdvSifirGosterilirmi" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'KDV_SIFIR_GOSTERILIR']"/>
 
   <xsl:variable name="dovizlimi"
         select="normalize-space($xroot/cac:PricingExchangeRate/cbc:CalculationRate) and not($xroot/cbc:DocumentCurrencyCode = 'TRL' or $xroot/cbc:DocumentCurrencyCode = 'TRY')"/>
@@ -486,6 +487,16 @@
     <xsl:choose>
       <xsl:when test="$_vergilerDahilToplamTutarGosterilirmi">
         <xsl:value-of select="$_vergilerDahilToplamTutarGosterilirmi"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>false</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="kdvSifirGosterilirmi">
+    <xsl:choose>
+      <xsl:when test="$_kdvSifirGosterilirmi">
+        <xsl:value-of select="$_kdvSifirGosterilirmi"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>false</xsl:text>
@@ -1247,7 +1258,7 @@
         <xsl:choose>
           <xsl:when test="$eIrsaliyemi">
             <xsl:for-each select="$xroot/cac:Shipment/cac:Delivery/cac:Despatch/cbc:ActualDespatchDate">
-              <tr>
+              <tr class="sevkTS">
                 <td class="etiket">Sevk Tarih / Saat:</td>
                 <td class="veri">
                   <span class="tarih">
@@ -1264,7 +1275,7 @@
             </xsl:for-each>
           </xsl:when>
           <xsl:when test="($efami) and ($xroot/cbc:IssueTime and not($xroot/cac:DespatchDocumentReference))">
-            <tr>
+            <tr class="sevkTS">
               <td class="etiket">Sevk Tarih / Saat:</td>
               <td class="veri">
                 <xsl:choose>
@@ -2396,8 +2407,8 @@
                   </td>
                 </tr>
               </xsl:for-each>
-              <xsl:for-each select="cac:TaxTotal/cac:TaxSubtotal [cbc:TaxAmount != 0]">
-                <xsl:if test="($iskontoVeyaNakliyeVarmi = 'true' or $cokluKDVmi) and cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode = '0015'">
+              <xsl:for-each select="cac:TaxTotal/cac:TaxSubtotal [$kdvSifirGosterilirmi or cbc:TaxAmount != 0]">
+                <xsl:if test="($iskontoVeyaNakliyeVarmi = 'true' or $cokluKDVmi) and cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode = '0015' and cbc:TaxAmount != 0">
                   <tr class="item">
                     <td class="etiket">
                       Hesaplanan <xsl:value-of select="cac:TaxCategory/cac:TaxScheme/cbc:Name"/> (%<xsl:value-of select="cbc:Percent"/>) Matrah
@@ -3152,7 +3163,7 @@
     </xsl:for-each>
   </xsl:template>
   <xsl:template name="vergiNotlar">
-    <!--<xsl:for-each select="$xroot/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory [cbc:TaxExemptionReason and cac:TaxScheme/cbc:TaxTypeCode = '0015']">
+    <xsl:for-each select="$xroot/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory [cbc:TaxExemptionReason and cac:TaxScheme/cbc:TaxTypeCode = '0015']">
       <div class="note note-ek vergi">
         <span class="etiket">*Vergi İstisna Muafiyet:</span>
         <span class="veri">
@@ -3161,7 +3172,7 @@
           <xsl:value-of select="cbc:TaxExemptionReason"/>
         </span>
       </div>
-    </xsl:for-each>-->
+    </xsl:for-each>
     <xsl:for-each select="$xroot/cac:WithholdingTaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme">
       <div class="note note-ek vergi">
         <span class="etiket">*Tevkifat:</span>
