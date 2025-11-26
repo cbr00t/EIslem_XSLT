@@ -1279,9 +1279,9 @@
           </xsl:when>
           <xsl:when test="($efami) and ($xroot/cbc:IssueTime and not($xroot/cac:DespatchDocumentReference))">
             <tr class="sevkTS">
-              <td class="etiket">Sevk Tarih / Saat:</td>
+              <td class="etiket">Düzenlenme Saati:</td>
               <td class="veri">
-                <xsl:choose>
+                <!--<xsl:choose>
                   <xsl:when test="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'SEVK_TARIH']">
                     <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'SEVK_TARIH']/cbc:IssueDate">
                       <span class="tarih">
@@ -1296,7 +1296,7 @@
                       </span>
                     </xsl:for-each>
                   </xsl:otherwise>
-                </xsl:choose>
+                </xsl:choose>-->
                 <xsl:for-each select="$xroot/cbc:IssueTime">
                   <span class="saat">
                     <xsl:text> </xsl:text>
