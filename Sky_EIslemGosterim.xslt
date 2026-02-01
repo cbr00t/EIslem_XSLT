@@ -2651,7 +2651,15 @@
                   <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_TEVBEDEL'">
                     <tr class="item">
                       <td class="etiket">
-                        Tevkifat Bedeli (<span class="ek-bilgi">TL</span>)
+						<xsl:choose>
+							<xsl:when test="normalize-space(cbc:DocumentDescription) != ''">
+								<xsl:value-of select="normalize-space(cbc:DocumentDescription)"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>Tevkifat Bedeli</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
+                        <xsl:text> (<span class="ek-bilgi">TL</span>)</xsl:text>
                       </td>
                       <td class="veri">
                         <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
