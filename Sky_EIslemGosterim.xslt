@@ -2143,18 +2143,20 @@
             <xsl:if test="$xtevNode [cbc:TaxAmount != 0]">
               <div class="tevkifat item">
                 <xsl:for-each select="$xtevNode [cbc:TaxAmount != 0]">
-                  <span class="etiket">
+                  <div class="etiket">
                     <u class="ek-bilgi">Tev</u>
                     <xsl:text>: </xsl:text>
-                    <xsl:value-of select="cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode"/>
                     <xsl:text> </xsl:text>
-                    (%<xsl:value-of select="cbc:Percent"/>)
+                    <!--(%<xsl:value-of select="cbc:Percent"/>)-->
+                    <xsl:value-of select="number(normalize-space(cbc:Percent)) div 10"/>
+                    <xsl:text>/10-</xsl:text>
+                    <xsl:value-of select="cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode"/>
                     <!--<span class="item ek-bilgi">: </span>-->
-                  </span>
-                  <span class="veri">
+                  </div>
+                  <div class="veri">
                     <xsl:value-of select="cbc:TaxAmount"/>
                     <xsl:call-template name="currency"/>
-                  </span>
+                  </div>
                 </xsl:for-each>
               </div>
             </xsl:if>
@@ -2492,19 +2494,19 @@
               <xsl:if test="$xtevNodes [cbc:TaxAmount != 0]">
                 <xsl:for-each select="$xtevNodes [cbc:TaxAmount != 0]">
                   <xsl:if test="cbc:TaxableAmount and cbc:TaxableAmount != 0">
-					<tr class="item">
-						<td class="etiket">
-						  <xsl:text>KDV Tev. Matrah (</xsl:text>
-						  <xsl:value-of select="number(normalize-space(cbc:Percent)) div 10"/>
-						  <xsl:text>/10-</xsl:text>
-						  <xsl:value-of select="cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode"/>
-						  <xsl:text>)</xsl:text>
-						</td>
-						<td class="veri">
-						  <xsl:value-of select="format-number(cbc:TaxableAmount, $bedelFormatStr, $numLocale)"/>
-						  <xsl:call-template name="currency"/>
-						</td>
-					  </tr>
+                    <tr class="item">
+                      <td class="etiket">
+                        <xsl:text>KDV Tev. Matrah (</xsl:text>
+                        <xsl:value-of select="number(normalize-space(cbc:Percent)) div 10"/>
+                        <xsl:text>/10-</xsl:text>
+                        <xsl:value-of select="cac:TaxCategory/cac:TaxScheme/cbc:TaxTypeCode"/>
+                        <xsl:text>)</xsl:text>
+                      </td>
+                      <td class="veri">
+                        <xsl:value-of select="format-number(cbc:TaxableAmount, $bedelFormatStr, $numLocale)"/>
+                        <xsl:call-template name="currency"/>
+                      </td>
+                    </tr>
                   </xsl:if>
                   <tr class="item">
                     <td class="etiket">
