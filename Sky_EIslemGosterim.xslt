@@ -1963,7 +1963,7 @@
           <xsl:with-param name="key" select="'MIKTAR2GORUNUM'"/>
         </xsl:call-template>
       </xsl:variable>
-      <xsl:if test="$satirdaMiktar2mi = 'true' and $miktar2Gorunum">
+      <xsl:if test="$satirdaMiktar2mi = 'true' and normalize-space($miktar2Gorunum)">
         <td class="numeric miktar2Gorunum">
           <xsl:value-of select="$miktar2Gorunum"/>
         </td>
