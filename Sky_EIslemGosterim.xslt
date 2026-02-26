@@ -826,6 +826,7 @@
                         <xsl:call-template name="firmaLogo"/>
                       </xsl:if>
                       <xsl:call-template name="islakImza"/>
+                      <xsl:call-template name="qrCode_alt"/>
                     </td>
                     <td class="right" align="right" valign="top">
                       <xsl:if test="$aliciSagdami = 'true'">
@@ -907,7 +908,6 @@
                 <xsl:call-template name="htmlBilgi"/>
               </xsl:for-each>
             </div>
-            <xsl:call-template name="qrCode_alt"/>
           </div>
         </xsl:for-each>
         <xsl:for-each select="$xroot/cac:AdditionalDocumentReference [cbc:DocumentType = 'BODY_SON']">
