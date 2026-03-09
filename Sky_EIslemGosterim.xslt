@@ -576,9 +576,9 @@
           .paper .party .item .mustKod-parent > .mustKod { font-weight: bold; color: #999 }
           .paper .party .item .unvan { font-size: <xsl:value-of select="$genelPunto + 1.5"/>pt; font-weight: bold }
           .paper .invoiceInfoTable {
-          width: fit-content; max-width: 100%; height: 100%; block-size: fit-content; margin: 0 2px 5px 5px !important; padding: 8px !important;
-          border-collapse: collapse; border-radius: 5px; box-shadow: 0px 0px 10px <xsl:value-of select="$border-renk"/>; border: 1px solid #f1f1f1;
-          overflow: hidden; z-index: 1; <xsl:if test="$aliciSagdami = 'true'">max-width: 90%;</xsl:if>
+            width: fit-content; max-width: 100%; height: 100%; block-size: fit-content; margin: 0 2px 5px 5px !important; padding: 8px !important;
+            border-collapse: collapse; border-radius: 5px; box-shadow: 0px 0px 10px <xsl:value-of select="$border-renk"/>; border: 1px solid #f1f1f1;
+            overflow: hidden; z-index: 1; <xsl:if test="$aliciSagdami = 'true'">max-width: 90%;</xsl:if>
           }
           .paper .invoiceInfoTable tr { background-color: white; overflow-wrap: break-word }
           .paper .invoiceInfoTable tr:nth-child(2n) { background-color: #fafafa }
@@ -642,6 +642,9 @@
           .paper .invoiceTableDetail tr td.digerVergiler { }
           .paper .invoiceTableDetail tr td.bedel { min-width: 120px; max-width: unset; width: <xsl:value-of select="$bedel-kolon-width"/>px }
           .paper .invoiceTableDetail tr.aciklamaSatiri td { font-size: <xsl:value-of select="$genelPunto - 0.5"/>pt; color: #999; padding: 5px 13px; text-align: left; border-radius: 10px; }
+          .paper .invoiceTableDetail tr.tesvikliSeriSira td { color: #555 }
+          .paper .invoiceTableDetail tr.tesvikliSeriSira td .veri { font-weight: bold }
+          /*.paper .invoiceTableDetail tr.tesvikliSeriSira .ek-bilgi td { color: #999 }*/
           .paper .invoiceTableTotal-parent { width: 99.9% }
           .paper .invoiceTableTotal-parent .invoiceTableTotal-parent { width: 330px; border-top: 3px solid #888 !important }
           .paper .banka, .paper #bankaBilgiler #tblBankaBilgiler {
@@ -660,7 +663,6 @@
           .paper .banka tbody tr, .paper #bankaBilgiler #tblBankaBilgiler tr { background-color: <xsl:value-of select="$zemin-renk"/> }
           .paper .banka tbody tr:nth-child(even), .paper #bankaBilgiler #tblBankaBilgiler tr:not(:first-child):nth-child(odd) { background-color: #fafafa }
           .paper .banka tr td.bankaAdi { max-width: 120px } .paper .banka tr td.sube { max-width: 120px }
-          {   }
           .paper .invoiceTableTotal { width: 100%; margin: 2px; border-radius: 10px; overflow: hidden; border: 1px solid #f1f1f1 }
           .paper .invoiceTableTotal tr { background-color: <xsl:value-of select="$zemin-renk"/> }
           .paper .invoiceTableTotal tr:nth-child(2n) { background-color: #fafafa }
@@ -3235,12 +3237,36 @@
     </xsl:for-each>
   </xsl:template>
   <xsl:template name="detayAciklamalar">
+    <xsl:call-template name="tesvikliSeriSiraText"/>
     <xsl:for-each select="cac:Item/cbc:Description [substring(., 1, 2) != '!#']">
       <xsl:call-template name="detayAciklama"/>
     </xsl:for-each>
     <xsl:for-each select="cbc:Note [substring(., 1, 2) != '!#']">
       <xsl:call-template name="detayAciklama"/>
     </xsl:for-each>
+  </xsl:template>
+  <xsl:template name="tesvikliSeriSiraText">
+    <xsl:variable name="rowNumber" select="parent::node()/cbc:ID"/>
+    <xsl:if test="cac:Item/cac:ItemInstance">
+      <tr class="aciklamaSatiri tesvikliSeriSira" data-rowindex="{$rowNumber}">
+        <td class="aciklamaText" colspan="1000">
+          <span class="etiket">Teşvik Sıra: </span>
+          <span class="veri">
+            <xsl:value-of select="cac:Item/cac:ItemInstance[1]/cbc:ProductTraceID"/>
+          </span>
+          <span class="ek-bilgi"> | </span>
+          <span class="etiket">Seri No: </span>
+          <xsl:for-each select="cac:Item/cac:ItemInstance">
+            <span class="veri">
+              <xsl:value-of select="cbc:SerialID"/>
+            </span>
+            <xsl:if test="position() != last()">
+              <span class="ek-bilgi">, </span>
+            </xsl:if>
+          </xsl:for-each>
+        </td>
+      </tr>
+    </xsl:if>
   </xsl:template>
   <xsl:template name="detayAciklama">
     <xsl:variable name="rowNumber" select="parent::node()/cbc:ID"/>
