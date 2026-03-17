@@ -2007,7 +2007,7 @@
       </xsl:variable>
       <xsl:if test="normalize-space($dundenSaglam)">
         <td class="numeric teslimVeDundenSaglam dundenSaglam">
-          <xsl:value-of select="$teslim"/>
+          <xsl:value-of select="$dundenSaglam"/>
         </td>
         <xsl:text> </xsl:text>
       </xsl:if>
