@@ -551,11 +551,11 @@
           .paper > * { width: 100%; height: max-content }
           .paper > *, .paper > * > *, .paper > * > * > * { position: relative }
           .paper .party, .paper .invoiceInfoTable {
-            border: none !important; border-radius: 10px !important;
-            <xsl:choose>
-              <xsl:when test="$koyuDizaynmi = 'true'">box-shadow: 0px 0px 6px #333 !important;</xsl:when>
-              <xsl:otherwise>box-shadow: 0px 0px 6px #2596be !important;</xsl:otherwise>
-            </xsl:choose>
+          border: none !important; border-radius: 10px !important;
+          <xsl:choose>
+            <xsl:when test="$koyuDizaynmi = 'true'">box-shadow: 0px 0px 6px #333 !important;</xsl:when>
+            <xsl:otherwise>box-shadow: 0px 0px 6px #2596be !important;</xsl:otherwise>
+          </xsl:choose>
           }
           .paper .top { }
           .paper .top > * > * { background-color: <xsl:value-of select="$zemin-renk"/> }
@@ -574,8 +574,8 @@
           .paper .qrcodeImage_alt-parent { position: relative; width: 200px; height: 200px; margin: 3px 0 0 0; padding: 10px; z-index: 0 }
           .paper .qrcodeImage_alt { width: 100%; height: 100% }
           .paper .right .firmaLogo,
-            .paper .right .islakImza,
-            .paper .right .kase { max-height: 100px; padding: 8px }
+          .paper .right .islakImza,
+          .paper .right .kase { max-height: 100px; padding: 8px }
           .paper .party { font-size: <xsl:value-of select="$genelPunto"/>pt; background-color: white !important; margin: 0 !important; padding: 4px 8px !important }
           .paper .sender.party { margin-bottom: 0.75cm !important } .paper .customer.party { margin-top: 0.75cm !important }
           .paper .party .item { padding: 2px 0px }
@@ -587,9 +587,9 @@
           .paper .party .item .mustKod-parent > .mustKod { font-weight: bold; color: #999 }
           .paper .party .item .unvan { font-size: <xsl:value-of select="$genelPunto + 1.5"/>pt; font-weight: bold }
           .paper .invoiceInfoTable {
-            width: fit-content; max-width: 100%; height: 100%; block-size: fit-content; margin: 0 2px 5px 5px !important; padding: 8px !important;
-            border-collapse: collapse; border-radius: 5px; box-shadow: 0px 0px 10px <xsl:value-of select="$border-renk"/>; border: 1px solid #f1f1f1;
-            overflow: hidden; z-index: 1; <xsl:if test="$aliciSagdami = 'true'">max-width: 90%;</xsl:if>
+          width: fit-content; max-width: 100%; height: 100%; block-size: fit-content; margin: 0 2px 5px 5px !important; padding: 8px !important;
+          border-collapse: collapse; border-radius: 5px; box-shadow: 0px 0px 10px <xsl:value-of select="$border-renk"/>; border: 1px solid #f1f1f1;
+          overflow: hidden; z-index: 1; <xsl:if test="$aliciSagdami = 'true'">max-width: 90%;</xsl:if>
           }
           .paper .invoiceInfoTable tr { background-color: white; overflow-wrap: break-word }
           .paper .invoiceInfoTable tr:nth-child(2n) { background-color: #fafafa }
@@ -607,10 +607,10 @@
           .paper .invoiceTableDetail .sub-table { margin: 0; margin-top: -5px; padding: 0; line-height: 11px }
           .paper .invoiceTableDetail .satir2 td.separator { width: 20px }
           .paper .invoiceTableDetail thead tr {
-            background: #0096c6; background-image: radial-gradient(circle farthest-corner at 10% 20%, #0096c6 0%, #00bdf9 90%);
-            <xsl:if test="$koyuDizaynmi = 'true'">
-              background-image: none; background: <xsl:value-of select="$yazi-renk-light-2"/>
-            </xsl:if>
+          background: #0096c6; background-image: radial-gradient(circle farthest-corner at 10% 20%, #0096c6 0%, #00bdf9 90%);
+          <xsl:if test="$koyuDizaynmi = 'true'">
+            background-image: none; background: <xsl:value-of select="$yazi-renk-light-2"/>
+          </xsl:if>
           }
           .paper .invoiceTableDetail > thead tr { }
           .paper .invoiceTableDetail .sub-table thead tr { background-image: unset; background: #bbb }
@@ -619,8 +619,8 @@
           .paper .invoiceTableDetail tbody tr { background-color: <xsl:value-of select="$zemin-renk"/> }
           .paper .invoiceTableDetail tbody tr:nth-child(2n) { background-color: #fafafa }
           .paper .invoiceTableDetail tbody tr td {
-            color: #333; text-align: center; border: 1px solid <xsl:value-of select="$border-renk"/>;
-            padding: 5px; /*white-space: pre-line; text-wrap: balance;*/ text-wrap: pretty
+          color: #333; text-align: center; border: 1px solid <xsl:value-of select="$border-renk"/>;
+          padding: 5px; /*white-space: pre-line; text-wrap: balance;*/ text-wrap: pretty
           }
           <xsl:if test="$eIhracatmi and $ciftSatirmi">
             .paper .invoiceTableDetail tr.detay.satir1 { font-weight: bold; background: #f5f5f5; border: 2px solid #ececec }
@@ -628,9 +628,9 @@
           </xsl:if>
           /*.paper .invoiceTableDetail tbody tr td > * { min-width: max-content }*/
           .paper .invoiceTableDetail tbody tr td:not(.numeric) {
-            white-space: normal;         /* IE'nin wrap yapabilmesi için şart */
-            word-wrap: break-word;       /* IE destekler */
-            overflow-wrap: break-word    /* Modern tarayıcılar için */
+          white-space: normal;         /* IE'nin wrap yapabilmesi için şart */
+          word-wrap: break-word;       /* IE destekler */
+          overflow-wrap: break-word    /* Modern tarayıcılar için */
           }
           .paper .invoiceTableDetail tbody tr td.numeric { text-align: right }
           .paper .invoiceTableDetail tr td { max-width: 130px; padding: 5px }
@@ -651,7 +651,7 @@
           .paper .invoiceTableDetail tr td.kdvText > .tevkifat.item > .etiket { font-weight: bold }
           .paper .invoiceTableDetail tr td.kdvText .ek-bilgi { color: <xsl:value-of select="$yazi-renk-light"/> }
           .paper .invoiceTableDetail tr td.kdvText .kod { font-weight: bold }
-          .paper .invoiceTableDetail tr td.kdvText .neden { font-size: 90%; margin-top: 3px } 
+          .paper .invoiceTableDetail tr td.kdvText .neden { font-size: 90%; margin-top: 3px }
           .paper .invoiceTableDetail tr td.kdvText .neden > .veri { color: orangered }
           .paper .invoiceTableDetail tr td.digerVergiler { }
           .paper .invoiceTableDetail tr td.bedel { min-width: 120px; max-width: unset; width: <xsl:value-of select="$bedel-kolon-width"/>px }
@@ -659,18 +659,18 @@
           .paper .invoiceTableTotal-parent { width: 99.9% }
           .paper .invoiceTableTotal-parent .invoiceTableTotal-parent { width: 330px; border-top: 3px solid #888 !important }
           .paper .banka, .paper #bankaBilgiler #tblBankaBilgiler {
-            font-size: <xsl:value-of select="$genelPunto - 1"/>pt; width: 100%; /*
-            width: calc(100% - (330px + 3px));*/ margin: 2px; border-radius: 5px;
-            border: 1px solid #f1f1f1; box-shadow: 0px 0px 10px <xsl:value-of select="$border-renk"/>;
-            overflow: hidden
+          font-size: <xsl:value-of select="$genelPunto - 1"/>pt; width: 100%; /*
+          width: calc(100% - (330px + 3px));*/ margin: 2px; border-radius: 5px;
+          border: 1px solid #f1f1f1; box-shadow: 0px 0px 10px <xsl:value-of select="$border-renk"/>;
+          overflow: hidden
           }
           .paper .banka tr td, .paper #bankaBilgiler #tblBankaBilgiler tr td {
-            font-weight: bold; color: #000; text-align: left; padding: 5px;
-            border: 1px solid <xsl:value-of select="$border-renk"/>
+          font-weight: bold; color: #000; text-align: left; padding: 5px;
+          border: 1px solid <xsl:value-of select="$border-renk"/>
           }
           .paper .banka thead tr, .paper .banka thead tr td, .paper #bankaBilgiler #tblBankaBilgiler tr:first-child {
-            color: whitef; background: #0096c6;
-            background-image: radial-gradient(circle farthest-corner at 10% 20%, #0096c6 0%, #00bdf9 90%)
+          color: whitef; background: #0096c6;
+          background-image: radial-gradient(circle farthest-corner at 10% 20%, #0096c6 0%, #00bdf9 90%)
           <xsl:if test="$koyuDizaynmi = 'true'">
             background-image: none; background: <xsl:value-of select="$yazi-renk-light-2"/>
           </xsl:if>
@@ -693,34 +693,34 @@
           .paper .invoiceTableTotal tbody.tlGosterim { border-top: 2px solid #aaa }
           .paper .invoiceTableTotal tbody.tlGosterim .item > .etiket .ek-bilgi { font-weight: bold }
           .paper .yalnizYazisi {
-            /*width: 750px;*/ font-weight: bold; text-align: right;
-            width: auto; right: 3px; margin: 2px 0px 0px 0;
-            padding: 5px 5px; border: 1px solid #e6e6e6; border-radius: 5px; background-color: #f1f1f1;
-            box-shadow: 0px 0px 10px <xsl:value-of select="$border-renk"/>
+          /*width: 750px;*/ font-weight: bold; text-align: right;
+          width: auto; right: 3px; margin: 2px 0px 0px 0;
+          padding: 5px 5px; border: 1px solid #e6e6e6; border-radius: 5px; background-color: #f1f1f1;
+          box-shadow: 0px 0px 10px <xsl:value-of select="$border-renk"/>
           }
           .paper .bakiye {
-            font-size: 110%; color: <xsl:value-of select="$yazi-renk-light"/>;
-            margin: 0; padding: 3px 5px; line-height: 20px
+          font-size: 110%; color: <xsl:value-of select="$yazi-renk-light"/>;
+          margin: 0; padding: 3px 5px; line-height: 20px
           }
           .paper .bakiye .veri { font-weight: bold; color: royalblue }
           .paper .notes {
-            width: 99%; color: <xsl:value-of select="$yazi-renk-light"/>;
-            border: 1px solid #e6e6e6; border-radius: 5px;
-            margin: 0; padding: 5px
+          width: 99%; color: <xsl:value-of select="$yazi-renk-light"/>;
+          border: 1px solid #e6e6e6; border-radius: 5px;
+          margin: 0; padding: 5px
           }
           .paper .notes .note { width: 100%; margin: 0; padding: 2px 5px }
           .paper .notes .note.note-ek, .paper .notes .note .etiket { font-weight: bold }
           .paper .notes .note .veri { font-weight: normal }
           .paper .bottom { }
           .paper .bottom .vioInfo {
-            /* font-size: <xsl:value-of select="$genelPunto"/>pt; */
-            font-size: <xsl:value-of select="$genelPunto - .5"/>pt; text-align: right;
-            width: 99%; color: #a3a3d0;
-            margin-top: -6px; padding: 5px
+          /* font-size: <xsl:value-of select="$genelPunto"/>pt; */
+          font-size: <xsl:value-of select="$genelPunto - .5"/>pt; text-align: right;
+          width: 99%; color: #a3a3d0;
+          margin-top: -6px; padding: 5px
           }
           .paper .ekFooter {
-            display: grid; width: 98.7%; /*border: 1px solid #e6e6e6; border-radius: 5px;*/
-            margin: 3px; padding: 10px
+          display: grid; width: 98.7%; /*border: 1px solid #e6e6e6; border-radius: 5px;*/
+          margin: 3px; padding: 10px
           }
           .paper .sevkAdres { max-height: 80px }
           .paper .sevkAdres > .item.adi { margin-bottom: 5px }
@@ -1728,10 +1728,14 @@
             </xsl:call-template>
           </xsl:variable>
           <xsl:if test="normalize-space($value_teslim)">
-            <td class="numeric teslimVeDundenSaglam teslim">Teslim<br/>Miktarı</td>
+            <td class="numeric teslimVeDundenSaglam teslim">
+              Teslim<br/>Miktarı
+            </td>
           </xsl:if>
           <xsl:if test="normalize-space($value_dundenSaglam)">
-            <td class="numeric teslimVeDundenSaglam dundenSaglam">Dünden<br/>Sağlam</td>
+            <td class="numeric teslimVeDundenSaglam dundenSaglam">
+              Dünden<br/>Sağlam
+            </td>
           </xsl:if>
         </xsl:if>
         <td class="numeric miktar">Miktar</td>
@@ -1751,8 +1755,12 @@
                 <xsl:text>Dv.</xsl:text>
               </xsl:if>
               <xsl:choose>
-                <xsl:when test="$fiyatGosterimKurali = 'NT'"><xsl:text>Net Fiyat</xsl:text></xsl:when>
-                <xsl:otherwise><xsl:text>Brm Fiyat</xsl:text></xsl:otherwise>
+                <xsl:when test="$fiyatGosterimKurali = 'NT'">
+                  <xsl:text>Net Fiyat</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>Brm Fiyat</xsl:text>
+                </xsl:otherwise>
               </xsl:choose>
             </td>
           </xsl:if>
@@ -2697,6 +2705,30 @@
                     </tr>
                   </xsl:when>
                   <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_VERGI'">
+                    <tr class="item">
+                      <td class="etiket">
+                        Hesaplanan <xsl:value-of select="parent::node()/cbc:DocumentTypeCode"/>
+                        (<span class="ek-bilgi">TL</span>)
+                      </td>
+                      <td class="veri">
+                        <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                        <xsl:text> TL</xsl:text>
+                      </td>
+                    </tr>
+                  </xsl:when>
+                  <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_VERGI'">
+                    <tr class="item">
+                      <td class="etiket">
+                        Hesaplanan <xsl:value-of select="parent::node()/cbc:DocumentTypeCode"/>
+                        (<span class="ek-bilgi">TL</span>)
+                      </td>
+                      <td class="veri">
+                        <xsl:value-of select="format-number(., $bedelFormatStr, $numLocale)"/>
+                        <xsl:text> TL</xsl:text>
+                      </td>
+                    </tr>
+                  </xsl:when>
+                  <xsl:when test="parent::node()/cbc:DocumentType = 'DIP_TL_TESVIKLIKDV'">
                     <tr class="item">
                       <td class="etiket">
                         Hesaplanan <xsl:value-of select="parent::node()/cbc:DocumentTypeCode"/>
@@ -3713,7 +3745,7 @@
     <xsl:param name="key"/>
     <xsl:param name="inside" select="true()"/>
     <xsl:choose>
-      <xsl:when test="$inside">   
+      <xsl:when test="$inside">
         <xsl:call-template name="getKeyValueInternal">
           <xsl:with-param name="key" select="$key"/>
         </xsl:call-template>
@@ -3766,36 +3798,36 @@
     </xsl:for-each>
   </xsl:template>
   <xsl:template name="decodeEntities">
-  <xsl:param name="text"/>
-  <xsl:choose>
-    <!-- numeric entity varsa -->
-    <xsl:when test="contains($text, '&amp;#')">
-      <xsl:variable name="before" select="substring-before($text, '&amp;#')"/>
-      <xsl:variable name="after"  select="substring-after($text, '&amp;#')"/>
-      <xsl:variable name="num" select="substring-before($after, ';')"/>
-      <xsl:variable name="rest" select="substring-after($after, ';')"/>
-      <!-- önceki kısım -->
-      <xsl:value-of select="$before"/>
-      <!-- numeric mapping -->
-      <xsl:choose>
-        <xsl:when test="$num='37'">%</xsl:when>
-        <xsl:when test="$num='43'">+</xsl:when>
-        <xsl:when test="$num='40'">(</xsl:when>
-        <xsl:when test="$num='41'">)</xsl:when>
-        <!-- başka gerekiyorsa buraya ekle -->
-        <xsl:otherwise>
-          <xsl:text>?</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-      <!-- kalan kısmı recursive işle -->
-      <xsl:call-template name="decodeEntities">
-        <xsl:with-param name="text" select="$rest"/>
-      </xsl:call-template>
-    </xsl:when>
-    <!-- başka entity yoksa -->
-    <xsl:otherwise>
-      <xsl:value-of select="$text"/>
-    </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
+    <xsl:param name="text"/>
+    <xsl:choose>
+      <!-- numeric entity varsa -->
+      <xsl:when test="contains($text, '&amp;#')">
+        <xsl:variable name="before" select="substring-before($text, '&amp;#')"/>
+        <xsl:variable name="after"  select="substring-after($text, '&amp;#')"/>
+        <xsl:variable name="num" select="substring-before($after, ';')"/>
+        <xsl:variable name="rest" select="substring-after($after, ';')"/>
+        <!-- önceki kısım -->
+        <xsl:value-of select="$before"/>
+        <!-- numeric mapping -->
+        <xsl:choose>
+          <xsl:when test="$num='37'">%</xsl:when>
+          <xsl:when test="$num='43'">+</xsl:when>
+          <xsl:when test="$num='40'">(</xsl:when>
+          <xsl:when test="$num='41'">)</xsl:when>
+          <!-- başka gerekiyorsa buraya ekle -->
+          <xsl:otherwise>
+            <xsl:text>?</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+        <!-- kalan kısmı recursive işle -->
+        <xsl:call-template name="decodeEntities">
+          <xsl:with-param name="text" select="$rest"/>
+        </xsl:call-template>
+      </xsl:when>
+      <!-- başka entity yoksa -->
+      <xsl:otherwise>
+        <xsl:value-of select="$text"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 </xsl:stylesheet>
