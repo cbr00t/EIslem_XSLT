@@ -103,6 +103,7 @@
   <xsl:param name="_sipRefGosterimKurali" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SIPREF_GOSTERIM_KURALI']" />
   <xsl:param name="_kdvSifirGosterilirmi" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'KDV_SIFIR_GOSTERILIR']"/>
   <xsl:param name="_satirdaTeslimVeDundenSaglam" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SATIRDA_TESLIMVEDUNDENSAGLAM']"/>
+  <xsl:param name="_satirdaSanalDoviz" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SATIRDA_SANAL_DOVIZ']"/>
 
   <xsl:variable name="dovizlimi"
         select="normalize-space($xroot/cac:PricingExchangeRate/cbc:CalculationRate) and not($xroot/cbc:DocumentCurrencyCode = 'TRL' or $xroot/cbc:DocumentCurrencyCode = 'TRY')"/>
@@ -526,6 +527,16 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+  <xsl:variable name="satirdaSanalDoviz">
+    <xsl:choose>
+      <xsl:when test="$_satirdaSanalDoviz">
+        <xsl:value-of select="normalize-space($_satirdaSanalDoviz) = 'true'"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="false()"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
 
 
   <xsl:template match="/">
@@ -704,23 +715,24 @@
           }
           .paper .bakiye .veri { font-weight: bold; color: royalblue }
           .paper .notes {
-          width: 99%; color: <xsl:value-of select="$yazi-renk-light"/>;
-          border: 1px solid #e6e6e6; border-radius: 5px;
-          margin: 0; padding: 5px
+            width: 99%; color: <xsl:value-of select="$yazi-renk-light"/>;
+            border: 1px solid #e6e6e6; border-radius: 5px;
+            margin: 0; padding: 5px
           }
           .paper .notes .note { width: 100%; margin: 0; padding: 2px 5px }
-          .paper .notes .note.note-ek, .paper .notes .note .etiket { font-weight: bold }
+          .paper .notes .note.note-ek:not(.note-ozel),
+            .paper .notes .note .etiket { font-weight: bold }
           .paper .notes .note .veri { font-weight: normal }
           .paper .bottom { }
           .paper .bottom .vioInfo {
-          /* font-size: <xsl:value-of select="$genelPunto"/>pt; */
-          font-size: <xsl:value-of select="$genelPunto - .5"/>pt; text-align: right;
-          width: 99%; color: #a3a3d0;
-          margin-top: -6px; padding: 5px
+            /* font-size: <xsl:value-of select="$genelPunto"/>pt; */
+            font-size: <xsl:value-of select="$genelPunto - .5"/>pt; text-align: right;
+            width: 99%; color: #a3a3d0;
+            margin-top: -6px; padding: 5px
           }
           .paper .ekFooter {
-          display: grid; width: 98.7%; /*border: 1px solid #e6e6e6; border-radius: 5px;*/
-          margin: 3px; padding: 10px
+            display: grid; width: 98.7%; /*border: 1px solid #e6e6e6; border-radius: 5px;*/
+            margin: 3px; padding: 10px
           }
           .paper .sevkAdres { max-height: 80px }
           .paper .sevkAdres > .item.adi { margin-bottom: 5px }
@@ -1748,6 +1760,11 @@
         <xsl:if test="$satirdaMiktar2mi = 'true' and normalize-space($miktar2Gorunum)">
           <td class="numeric miktar2">Miktar2</td>
         </xsl:if>
+        <xsl:if test="$efami and $fiyatBedelGosterilirmi = 'true' and $satirdaSanalDoviz">
+          <td class="numeric sanalDvFiyat">
+            Sanal<br/>Dv. Fiyat
+          </td>
+        </xsl:if>
         <xsl:if test="$fiyatBedelGosterilirmi = 'true'">
           <xsl:if test="not ($dovizlimi) or $dovizGosterimKurali != ''">
             <td class="numeric fiyat">
@@ -1819,6 +1836,11 @@
           </xsl:if>
           <xsl:if test="$satirdaDigerVergilermi = 'true' and $xroot//cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme[cbc:TaxTypeCode != '0015']">
             <td class="numeric digerVergiler">Diğer Vergiler</td>
+          </xsl:if>
+          <xsl:if test="$efami and $fiyatBedelGosterilirmi = 'true' and $satirdaSanalDoviz">
+            <td class="numeric sanalDvBedel">
+              Sanal<br/>Dv. Bedel
+            </td>
           </xsl:if>
           <xsl:if test="$fiyatBedelGosterilirmi = 'true' and not ($dovizlimi) or $dovizGosterimKurali != ''">
             <td class="numeric bedel">
@@ -2052,6 +2074,16 @@
           <xsl:value-of select="$miktar2Gorunum"/>
         </td>
       </xsl:if>
+      <xsl:variable name="sanalDvFiyat">
+        <xsl:call-template name="getKeyValue">
+          <xsl:with-param name="key" select="'SANAL_DVFIYAT'"/>
+        </xsl:call-template>
+      </xsl:variable>
+      <xsl:if test="$efami and $fiyatBedelGosterilirmi = 'true' and $satirdaSanalDoviz">
+        <td class="numeric sanalDvFiyat">
+          <xsl:value-of select="$sanalDvFiyat"/>
+        </td>
+      </xsl:if>
       <xsl:if test="$fiyatBedelGosterilirmi = 'true'">
         <xsl:if test="not ($dovizlimi) or $dovizGosterimKurali != ''">
           <td class="numeric fiyat">
@@ -2272,6 +2304,16 @@
             <xsl:text> </xsl:text>
           </td>
         </xsl:if>
+        <xsl:variable name="sanalDvBedel">
+          <xsl:call-template name="getKeyValue">
+            <xsl:with-param name="key" select="'SANAL_DVBEDEL'"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:if test="$efami and $fiyatBedelGosterilirmi = 'true' and $satirdaSanalDoviz">
+          <td class="numeric sanalDvBedel">
+            <xsl:value-of select="$sanalDvBedel"/>
+          </td>
+        </xsl:if>
         <xsl:if test="$fiyatBedelGosterilirmi = 'true' and not ($dovizlimi) or $dovizGosterimKurali != ''">
           <td class="numeric bedel">
             <xsl:for-each select="cbc:LineExtensionAmount">
@@ -2380,7 +2422,7 @@
   <xsl:template name="bankaTable">
     <!--<xsl:if test="($efami) and $xroot/cac:PaymentMeans/cac:PayeeFinancialAccount [normalize-space(cbc:PaymentNote) != '']">-->
     <table class="banka">
-      <xsl:if test="($efami) and $xroot/cac:PaymentMeans/cac:PayeeFinancialAccount [normalize-space(cbc:PaymentNote) != '']">
+      <xsl:if test="$efami and $xroot/cac:PaymentMeans/cac:PayeeFinancialAccount [normalize-space(cbc:PaymentNote) != '']">
         <thead>
           <tr class="baslik">
             <td class="bankaAdi">Banka Adı</td>
@@ -3276,17 +3318,28 @@
       <xsl:if test="$xroot/cac:AdditionalDocumentReference[cbc:DocumentTypeCode = 'IS_INTERNET']">
         <xsl:call-template name="intSatisBilgi"/>
       </xsl:if>
-      <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentTypeCode = 'ONCEKI_BAKIYE']/cbc:DocumentDescription">
-        <xsl:call-template name="bakiye">
-          <xsl:with-param name="cssPrefix" select="'oncekiBakiye'"/>
-          <xsl:with-param name="etiketPrefix" select="'Öncesi'"/>
-        </xsl:call-template>
-      </xsl:for-each>
-      <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentTypeCode = 'SONRAKI_BAKIYE']/cbc:DocumentDescription">
-        <xsl:call-template name="bakiye">
-          <xsl:with-param name="cssPrefix" select="'sonrakiBakiye'"/>
-          <xsl:with-param name="etiketPrefix" select="'Sonrası'"/>
-        </xsl:call-template>
+      <xsl:for-each select="$xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'EK_NOTLAR']/cbc:DocumentDescription">
+        <xsl:choose>
+          <xsl:when test="parent::node()/cbc:DocumentTypeCode = 'ONCEKI_BAKIYE'">
+            <xsl:call-template name="bakiye">
+              <xsl:with-param name="cssPrefix" select="'oncekiBakiye'"/>
+              <xsl:with-param name="etiketPrefix" select="'Öncesi'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="parent::node()/cbc:DocumentTypeCode = 'SONRAKI_BAKIYE'">
+            <xsl:call-template name="bakiye">
+              <xsl:with-param name="cssPrefix" select="'sonrakiBakiye'"/>
+              <xsl:with-param name="etiketPrefix" select="'Sonrası'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+            <div class="note note-ek note-ozel">
+              <xsl:call-template name="html-escape">
+                <xsl:with-param name="text" select="."/>
+              </xsl:call-template>
+            </div>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:for-each>
     </div>
   </xsl:template>
