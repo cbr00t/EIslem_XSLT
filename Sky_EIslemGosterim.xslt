@@ -517,26 +517,10 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:variable name="satirdaTeslimVeDundenSaglam">
-    <xsl:choose>
-      <xsl:when test="$_satirdaTeslimVeDundenSaglam">
-        <xsl:value-of select="normalize-space($_satirdaTeslimVeDundenSaglam) = 'true'"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="false()"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <xsl:variable name="satirdaSanalDoviz">
-    <xsl:choose>
-      <xsl:when test="$_satirdaSanalDoviz">
-        <xsl:value-of select="normalize-space($_satirdaSanalDoviz) = 'true'"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="false()"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
+  <xsl:variable name="satirdaTeslimVeDundenSaglam"
+      select="$_satirdaSanalDoviz and normalize-space($_satirdaTeslimVeDundenSaglam) = 'true'"/>
+  <xsl:variable name="satirdaSanalDoviz"
+      select="$_satirdaSanalDoviz and normalize-space($_satirdaSanalDoviz) = 'true'"/>
 
 
   <xsl:template match="/">
