@@ -1760,7 +1760,13 @@
         <xsl:if test="$satirdaMiktar2mi = 'true' and normalize-space($miktar2Gorunum)">
           <td class="numeric miktar2">Miktar2</td>
         </xsl:if>
-        <xsl:if test="$efami and $fiyatBedelGosterilirmi = 'true' and $satirdaSanalDoviz">
+        <xsl:variable name="sanalDvFiyat">
+          <xsl:call-template name="getKeyValue">
+            <xsl:with-param name="key" select="'SANAL_DVFIYAT'"/>
+            <xsl:with-param name="inside" select="false()"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:if test="$efami and $fiyatBedelGosterilirmi = 'true' and $satirdaSanalDoviz and normalize-space($sanalDvFiyat)">
           <td class="numeric sanalDvFiyat">
             Sanal<br/>Dv. Fiyat
           </td>
@@ -1842,7 +1848,13 @@
                 $xroot//cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme[cbc:TaxTypeCode != '0015']">
             <td class="numeric digerVergiler">Diğer Vergiler</td>
           </xsl:if>
-          <xsl:if test="$efami and $fiyatBedelGosterilirmi = 'true' and $satirdaSanalDoviz and $sanalDvBedel">
+          <xsl:variable name="sanalDvBedel">
+            <xsl:call-template name="getKeyValue">
+              <xsl:with-param name="key" select="'SANAL_DVBEDEL'"/>
+              <xsl:with-param name="inside" select="false()"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:if test="$efami and $fiyatBedelGosterilirmi = 'true' and $satirdaSanalDoviz and normalize-space($sanalDvBedel)">
             <td class="numeric sanalDvBedel">
               Sanal<br/>Dv. Bedel
             </td>
@@ -2133,7 +2145,7 @@
           <xsl:with-param name="key" select="'SANAL_DVFIYAT'"/>
         </xsl:call-template>
       </xsl:variable>
-      <xsl:if test="$efami and $fiyatBedelGosterilirmi = 'true' and $satirdaSanalDoviz and $baslik_sanalDvFiyat">
+      <xsl:if test="$efami and $fiyatBedelGosterilirmi = 'true' and $satirdaSanalDoviz and normalize-space($baslik_sanalDvFiyat)">
         <td class="numeric sanalDvFiyat">
           <xsl:value-of select="$sanalDvFiyat"/>
           <xsl:text> </xsl:text>
@@ -2390,7 +2402,7 @@
             <xsl:with-param name="key" select="'SANAL_DVBEDEL'"/>
           </xsl:call-template>
         </xsl:variable>
-        <xsl:if test="$efami and $fiyatBedelGosterilirmi = 'true' and $satirdaSanalDoviz and $baslik_sanalDvBedel">
+        <xsl:if test="$efami and $fiyatBedelGosterilirmi = 'true' and $satirdaSanalDoviz and normalize-space($baslik_sanalDvBedel)">
           <td class="numeric sanalDvBedel">
             <xsl:value-of select="$sanalDvBedel"/>
           </td>
