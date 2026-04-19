@@ -1723,7 +1723,7 @@
             <xsl:with-param name="inside" select="false()"/>
           </xsl:call-template>
         </xsl:variable>
-        <xsl:if test="$koliGorunum">
+        <xsl:if test="normalize-space($koliGorunum)">
           <td class="text koli">KOLİ</td>
         </xsl:if>
         <xsl:if test="$satirdaTeslimVeDundenSaglam">
