@@ -1035,225 +1035,233 @@
     </xsl:choose>
   </xsl:template>
   <xsl:template name="ulsBrm">
-    <xsl:if test="@unitCode">
+    <xsl:if test = "@unitCode">
+      <xsl:call-template name="ulsBrm_internal">
+        <xsl:with-param name="brm" select="@unitCode"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template name="ulsBrm_internal">
+    <xsl:param name="brm"/>
+    <xsl:if test="$brm">
       <xsl:text> </xsl:text>
       <xsl:choose>
-        <xsl:when test="@unitCode = 'KGM'">
+        <xsl:when test = "$brm = 'KGM'">
           <span>
             <xsl:text> Kilo</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'NIU'">
+        <xsl:when test = "$brm = 'NIU'">
           <span>
             <xsl:text> Adet</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'MTR'">
+        <xsl:when test = "$brm = 'MTR'">
           <span>
             <xsl:text> Metre</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'LTR'">
+        <xsl:when test = "$brm = 'LTR'">
           <span>
             <xsl:text> Litre</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'PK'">
+        <xsl:when test = "$brm = 'PK'">
           <span>
             <xsl:text> Paket</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'NPL'">
+        <xsl:when test = "$brm = 'NPL'">
           <span>
             <xsl:text> Paket</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'BX'">
+        <xsl:when test = "$brm = 'BX'">
           <span>
             <xsl:text> Kutu</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'ROLL'">
+        <xsl:when test = "$brm = 'ROLL'">
           <span>
             <xsl:text> Rulo</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'CMT'">
+        <xsl:when test = "$brm = 'CMT'">
           <span>
             <xsl:text> Santim</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'MMT'">
+        <xsl:when test = "$brm = 'MMT'">
           <span>
             <xsl:text> Milimetre</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'MTK'">
+        <xsl:when test = "$brm = 'MTK'">
           <span>
             <xsl:text> Metrekare</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'MTQ'">
+        <xsl:when test = "$brm = 'MTQ'">
           <span>
             <xsl:text> Metreküp</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'GRM'">
+        <xsl:when test = "$brm = 'GRM'">
           <span>
             <xsl:text> Gram</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'PF'">
+        <xsl:when test = "$brm = 'PF'">
           <span>
             <xsl:text> Palet</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'SET'">
+        <xsl:when test = "$brm = 'SET'">
           <span>
             <xsl:text> Set</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'BG'">
+        <xsl:when test = "$brm = 'BG'">
           <span>
             <xsl:text> Torba</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'NT'">
+        <xsl:when test = "$brm = 'NT'">
           <span>
             <xsl:text> Ton</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'PGL'">
+        <xsl:when test = "$brm = 'PGL'">
           <span>
             <xsl:text> Galon</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode  = 'PR'">
+        <xsl:when test = "$brm  = 'PR'">
           <span>
             <xsl:text> Çift</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'WW'">
+        <xsl:when test = "$brm = 'WW'">
           <span>
             <xsl:text> Mililitre</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = '4H'">
+        <xsl:when test = "$brm = '4H'">
           <span>
             <xsl:text> Mikrometre</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'WTT'">
+        <xsl:when test = "$brm = 'WTT'">
           <span>
             <xsl:text> Watt</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = '2I'">
+        <xsl:when test = "$brm = '2I'">
           <span>
             <xsl:text> BTU</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'ANN'">
+        <xsl:when test = "$brm = 'ANN'">
           <span>
             <xsl:text> Yıl</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'MON'">
+        <xsl:when test = "$brm = 'MON'">
           <span>
             <xsl:text> Ay</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'DAY'">
+        <xsl:when test = "$brm = 'DAY'">
           <span>
             <xsl:text> Gün</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'HUR'">
+        <xsl:when test = "$brm = 'HUR'">
           <span>
             <xsl:text> Saat</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'D61'">
+        <xsl:when test = "$brm = 'D61'">
           <span>
             <xsl:text> Dakika</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'D62'">
+        <xsl:when test = "$brm = 'D62'">
           <span>
             <xsl:text> Saniye</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'C26'">
+        <xsl:when test = "$brm = 'C26'">
           <span>
             <xsl:text> Milisaniye</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'KJO'">
+        <xsl:when test = "$brm = 'KJO'">
           <span>
             <xsl:text> kJ</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'MGM'">
+        <xsl:when test = "$brm = 'MGM'">
           <span>
             <xsl:text> MG</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'GT'">
+        <xsl:when test = "$brm = 'GT'">
           <span>
             <xsl:text> GT</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'KTM'">
+        <xsl:when test = "$brm = 'KTM'">
           <span>
             <xsl:text> KM</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'MLT'">
+        <xsl:when test = "$brm = 'MLT'">
           <span>
             <xsl:text> ML</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'MMQ'">
+        <xsl:when test = "$brm = 'MMQ'">
           <span>
             <xsl:text> MM3</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'CLT'">
+        <xsl:when test = "$brm = 'CLT'">
           <span>
             <xsl:text> CL</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'CMK'">
+        <xsl:when test = "$brm = 'CMK'">
           <span>
             <xsl:text> CM2</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'CMQ'">
+        <xsl:when test = "$brm = 'CMQ'">
           <span>
             <xsl:text> CM3</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'KWH'">
+        <xsl:when test = "$brm = 'KWH'">
           <span>
             <xsl:text> KWH</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'ND'">
+        <xsl:when test = "$brm = 'ND'">
           <span>
             <xsl:text> Fıçı</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'TN'">
+        <xsl:when test = "$brm = 'TN'">
           <span>
             <xsl:text> Teneke</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'DR'">
+        <xsl:when test = "$brm = 'DR'">
           <span>
             <xsl:text> Bidon</xsl:text>
           </span>
         </xsl:when>
-        <xsl:when test="@unitCode = 'RO'">
+        <xsl:when test = "$brm = 'RO'">
           <span>
             <xsl:text> Rulo</xsl:text>
           </span>
@@ -2128,10 +2136,19 @@
           <xsl:with-param name="key" select="'MIKTAR2GORUNUM'"/>
         </xsl:call-template>
       </xsl:variable>
+      <xsl:variable name="brm2Gorunum">
+        <xsl:call-template name="getKeyValue">
+          <xsl:with-param name="key" select="'BRM2GORUNUM'"/>
+        </xsl:call-template>
+      </xsl:variable>
       <xsl:if test="$satirdaMiktar2mi = 'true' and normalize-space($baslik_miktar2Gorunum)">
         <td class="numeric miktar2Gorunum">
           <xsl:value-of select="$miktar2Gorunum"/>
           <xsl:text> </xsl:text>
+          <xsl:value-of select="$brm2Gorunum"/>
+          <!--<xsl:call-template name="ulsBrm_internal">
+            <xsl:with-param name="brm" select="$brm2"/>
+          </xsl:call-template>-->
         </td>
       </xsl:if>
       <xsl:variable name="baslik_sanalDvFiyat">
