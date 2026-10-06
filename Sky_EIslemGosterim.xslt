@@ -207,14 +207,15 @@
         <xsl:value-of select="$_yazi-renk-light"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:choose>
+        <xsl:text>#111</xsl:text>
+        <!--<xsl:choose>
           <xsl:when test="$koyuDizaynmi = 'true'">
             <xsl:text>#272727</xsl:text>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>#777</xsl:text>
           </xsl:otherwise>
-        </xsl:choose>
+        </xsl:choose>-->
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -226,10 +227,10 @@
       <xsl:otherwise>
         <xsl:choose>
           <xsl:when test="$koyuDizaynmi = 'true'">
-            <xsl:text>#555</xsl:text>
+            <xsl:text>#111</xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>#999</xsl:text>
+            <xsl:text>#222</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:otherwise>
@@ -243,7 +244,7 @@
       <xsl:otherwise>
         <xsl:choose>
           <xsl:when test="$koyuDizaynmi = 'true'">
-            <xsl:text>#272727</xsl:text>
+            <xsl:text>#111</xsl:text>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>royalblue</xsl:text>
