@@ -669,6 +669,8 @@
           .paper .invoiceTableDetail tbody tr td.numeric { text-align: right }
           .paper .invoiceTableDetail tr td { max-width: 130px; padding: 5px }
           .paper .invoiceTableDetail tr td.rowNumber { width: 13px }
+          .paper .invoiceTableDetail tr td.yerlilikOrani { width: 48px }
+		  .paper .invoiceTableDetail tr td.sasKalemNo { width: 45px }
           .paper .invoiceTableDetail tr td.barkod,
             .paper .invoiceTableDetail tr td.shKod { width: 100px; overflow-wrap: anywhere !important }
           .paper .invoiceTableDetail tr td.shAdi { min-width: 150px; max-width: unset; width: -webkit-fill-available }
