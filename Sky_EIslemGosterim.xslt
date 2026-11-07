@@ -94,6 +94,8 @@
   <xsl:param name="_satirdaIskBedelmi" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SATIRDA_ISKONTO_BEDELI']"/>
   <xsl:param name="_satirdaKdvmi" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SATIRDA_KDV']"/>
   <xsl:param name="_satirdaDigerVergilermi" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SATIRDA_DIGER_VERGILER']"/>
+  <xsl:param name="_satirdaYerlilik" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SATIRDA_YERLILIK']"/>
+  <xsl:param name="_satirdaSASKalem" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'SATIRDA_SASKALEM']"/>
   <xsl:param name="_kodYerineSiraNomu" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'KOD_YERINE_SIRANO']"/>
   <!--<xsl:param name="_dipteVergilerDahilToplamTutarmi" select="$xroot/cac:AdditionalDocumentReference/cbc:ID [parent::node()/cbc:DocumentType = 'PARAM' and parent::node()/cbc:DocumentTypeCode = 'DIPTE_VERGILER_DAHIL_TOPLAM_TUTAR']"/>-->
   <xsl:param name="_iskontoVeyaNakliyeVarmi" select="($xroot/cac:AllowanceCharge/cbc:Amount and $xroot/cac:AllowanceCharge/cbc:Amount != 0) or ($xroot/cac:AdditionalDocumentReference[cbc:DocumentType = 'DIP_NAKBEDEL'])" />
@@ -456,6 +458,26 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+  <xsl:variable name="satirdaYerlilik">
+    <xsl:choose>
+      <xsl:when test="$_satirdaYerlilik">
+        <xsl:value-of select="$_satirdaYerlilik"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>false</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="satirdaSASKalem">
+    <xsl:choose>
+      <xsl:when test="$_satirdaSASKalem">
+        <xsl:value-of select="$_satirdaSASKalem"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>false</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:variable name="kodYerineSiraNomu">
     <xsl:choose>
       <xsl:when test="$_kodYerineSiraNomu">
@@ -648,7 +670,7 @@
           .paper .invoiceTableDetail tr td { max-width: 130px; padding: 5px }
           .paper .invoiceTableDetail tr td.rowNumber { width: 13px }
           .paper .invoiceTableDetail tr td.barkod,
-          .paper .invoiceTableDetail tr td.shKod { width: 100px; overflow-wrap: anywhere !important }
+            .paper .invoiceTableDetail tr td.shKod { width: 100px; overflow-wrap: anywhere !important }
           .paper .invoiceTableDetail tr td.shAdi { min-width: 150px; max-width: unset; width: -webkit-fill-available }
           .paper .invoiceTableDetail tr td.teslimVeDundenSaglam { width: 60px }
           .paper .invoiceTableDetail tr td.miktar { width: 90px; max-width: 130px }
@@ -1654,6 +1676,12 @@
         <xsl:if test="$kodYerineSiraNomu != 'true'">
           <td colspan="1" class="numeric rowNumber">Sıra No</td>
         </xsl:if>
+		<xsl:if test="$satirdaYerlilik = 'true'">
+          <td class="yerlilikOrani numeric">Yerlilik Oranı</td>
+        </xsl:if>
+		<xsl:if test="$satirdaSASKalem = 'true'">
+          <td class="sasKalemNo numeric">SAS Kalem No</td>
+        </xsl:if>
         <xsl:if test="$satirdaBarkodmu = 'true' and not($eIhracatmi)">
           <td class="text barkod">Barkod</td>
         </xsl:if>
@@ -1930,6 +1958,19 @@
           <xsl:text> </xsl:text>
         </td>
       </xsl:if>
+		<xsl:if test="$satirdaYerlilik = 'true'">
+			<td class="yerlilikOrani numeric">
+				<xsl:value-of select="substring-after(cbc:Note[contains(., '!#SATIR_YERLILIK=')][1], '!#SATIR_YERLILIK=')"/>
+				<xsl:text> </xsl:text>
+			</td>
+		</xsl:if>
+
+		<xsl:if test="$satirdaSASKalem = 'true'">
+			<td class="sasKalemNo numeric">
+				<xsl:value-of select="substring-after(cbc:Note[contains(., '!#SATIR_SASKALEM=')][1], '!#SATIR_SASKALEM=')"/>
+				<xsl:text> </xsl:text>
+			</td>
+		</xsl:if>
       <xsl:if test="$satirdaBarkodmu = 'true' and not($eIhracatmi)">
         <td class="text align-left barkod">
           <xsl:if test="not (normalize-space(cac:Item/cac:ManufacturersItemIdentification/cbc:ID) = normalize-space(cac:Item/cac:SellersItemIdentification/cbc:ID))">
